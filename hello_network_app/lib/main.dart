@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hello_network_app/src/pages/index.dart';
 import 'package:hello_network_app/src/pages/slideshow.dart';
+import 'package:hello_network_app/src/pages/test.dart';
 
 void main() {
   runApp(const MainApp());
@@ -10,9 +12,20 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SlideShowPage(),
+      initialRoute: "/",
+      routes: <String, WidgetBuilder>{
+        "/": (BuildContext context) {
+          return SlideShowPage();
+        },
+        "/home": (BuildContext context) {
+          return IndexApp();
+        },
+        "/test": (BuildContext context) {
+          return TestApp();
+        }
+      },
     );
   }
 }

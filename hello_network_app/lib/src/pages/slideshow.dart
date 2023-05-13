@@ -14,12 +14,13 @@ class SlideShowPage extends StatelessWidget {
           return Scaffold(
             body: Center(
               child: Column(children: <Widget>[
-                Expanded(child: _Slider()),
-                _Dots(),
+                const Expanded(child: _Slider()),
+                const _Dots(),
                 Container(
-                  margin: EdgeInsets.all(10),
-                  child: Button("Empezar", Color(0xff273469),
-                      () => {print("Hola Mundo")}),
+                  margin: const EdgeInsets.all(10),
+                  child: Button("Empezar", const Color(0xff273469), () {
+                    Navigator.pushNamed(context, "/home");
+                  }),
                 ),
               ]),
             ),
@@ -29,7 +30,7 @@ class SlideShowPage extends StatelessWidget {
 }
 
 class _Slider extends StatefulWidget {
-  const _Slider({super.key});
+  const _Slider();
 
   @override
   State<_Slider> createState() => _SliderState();
@@ -37,11 +38,10 @@ class _Slider extends StatefulWidget {
 
 // Colección de slides
 class _SliderState extends State<_Slider> {
-  final pageViewController = new PageController();
+  final pageViewController = PageController();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     //Provider.of<SliderModel>(context, listen: false)
     //.setCurrentPage(pageViewController.page);
@@ -65,7 +65,7 @@ class _SliderState extends State<_Slider> {
     return Container(
       child: PageView(
         controller: pageViewController,
-        children: <Widget>[
+        children: const <Widget>[
           _Slide(
               "Ofrecemos comunicación segura con otros usuarios de tu red.",
               "Respetamos la privacidad de nuestros usuarios, es por eso que cada conversación está cifrada de extremo a extremo.",
@@ -89,7 +89,7 @@ class _Slide extends StatelessWidget {
   final String title;
   final String description;
   final String imageURL;
-  _Slide(this.title, this.description, this.imageURL);
+  const _Slide(this.title, this.description, this.imageURL);
 
   @override
   Widget build(BuildContext context) {
@@ -99,23 +99,23 @@ class _Slide extends StatelessWidget {
       children: <Widget>[
         _CircleBackground(imageURL),
         Container(
-          margin: EdgeInsets.all(10),
-          padding: EdgeInsets.all(16),
+          margin: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(16),
           child: Text(
             title,
             maxLines: 3,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
                 fontFamily: 'Poppins', fontSize: 25, color: Color(0xff03045E)),
           ),
         ),
         Container(
           //margin: EdgeInsets.all(10),
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Text(
             description,
             textAlign: TextAlign.justify,
-            style: TextStyle(fontFamily: "Poppins", fontSize: 15),
+            style: const TextStyle(fontFamily: "Poppins", fontSize: 15),
           ),
         )
       ],
@@ -125,7 +125,7 @@ class _Slide extends StatelessWidget {
 
 // Colección de puntos
 class _Dots extends StatelessWidget {
-  const _Dots({super.key});
+  const _Dots();
 
   @override
   Widget build(BuildContext context) {
@@ -151,14 +151,14 @@ class _Dot extends StatelessWidget {
     final pageViewIndex = Provider.of<SliderModel>(context).currentPage;
 
     return AnimatedContainer(
-      duration: Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 200),
       width: 20,
       height: 20,
-      margin: EdgeInsets.symmetric(horizontal: 5),
+      margin: const EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
         color: (pageViewIndex >= (index - 0.5) && pageViewIndex < (index + 0.5))
-            ? Color(0xffFFC700)
-            : Color(0xff273469),
+            ? const Color(0xffFFC700)
+            : const Color(0xff273469),
         shape: BoxShape.circle,
       ),
     );
@@ -169,7 +169,7 @@ class _Dot extends StatelessWidget {
 class _CircleBackground extends StatelessWidget {
   final String image;
 
-  _CircleBackground(this.image);
+  const _CircleBackground(this.image);
 
   @override
   Widget build(BuildContext context) {
@@ -179,12 +179,12 @@ class _CircleBackground extends StatelessWidget {
       width: size.width,
       height: size.height * 0.5,
       decoration: BoxDecoration(
-        color: Color(0xff273469),
+        color: const Color(0xff273469),
         image: DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
-        borderRadius: BorderRadius.vertical(
+        borderRadius: const BorderRadius.vertical(
           bottom: Radius.elliptical(200.0, 80.0),
         ),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
               color: Color(0xff273469), blurRadius: 0, offset: Offset(0, 6)),
         ],
