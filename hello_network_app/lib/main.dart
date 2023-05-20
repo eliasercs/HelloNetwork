@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_network_app/src/pages/dashboard.dart';
 import 'package:hello_network_app/src/pages/index.dart';
 import 'package:hello_network_app/src/pages/slideshow.dart';
 import 'package:hello_network_app/src/pages/test.dart';
@@ -17,13 +18,16 @@ class MainApp extends StatelessWidget {
       initialRoute: "/",
       routes: <String, WidgetBuilder>{
         "/": (BuildContext context) {
-          return SlideShowPage();
+          return const SlideShowPage();
         },
         "/home": (BuildContext context) {
-          return IndexApp();
+          return const IndexApp();
+        },
+        "/dashboard": (BuildContext context) {
+          return const Dashboard();
         },
         "/test": (BuildContext context) {
-          return TestApp();
+          return const TestApp();
         }
       },
     );

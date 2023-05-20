@@ -43,7 +43,7 @@ class IndexApp extends StatelessWidget {
                   Column(
                     children: [
                       Button("Iniciar Sesión", const Color(0xff1E2749), () {
-                        Navigator.pushNamed(context, "/test");
+                        Navigator.pushNamed(context, "/dashboard");
                       }),
                       Button("Crea una cuenta", const Color(0xff30343F), () {
                         print("Crea una cuenta");
