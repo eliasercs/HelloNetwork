@@ -15,7 +15,7 @@ class Dashboard extends StatelessWidget {
           navbarDashboard("Eliaser", "Concha"),
           tab(),
           inputPost(),
-          posts()
+          Expanded(child: posts())
         ]),
       ),
     );

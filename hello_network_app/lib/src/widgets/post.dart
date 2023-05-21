@@ -12,14 +12,14 @@ class avatar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
-          margin: EdgeInsets.only(right: 10.0),
+          margin: const EdgeInsets.only(right: 10.0),
           child: ProfileAvatar(
               50, 50, "https://www.w3schools.com/howto/img_avatar.png"),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: const [
             Text("Eliaser Concha",
                 style: TextStyle(fontFamily: "Poppins", fontSize: 18)),
             Text(
@@ -39,12 +39,12 @@ class postText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final Radius radius = Radius.circular(15);
+    Radius radius = const Radius.circular(15);
 
     return Container(
       width: size.width,
-      padding: EdgeInsets.all(10),
-      margin: EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.symmetric(vertical: 10),
       //color: Colors.white,
       decoration: BoxDecoration(
           color: Colors.white,
@@ -52,7 +52,7 @@ class postText extends StatelessWidget {
               color: Colors.white, width: 1, style: BorderStyle.solid),
           borderRadius: BorderRadius.only(
               topRight: radius, bottomLeft: radius, bottomRight: radius)),
-      child: Text(
+      child: const Text(
         "Este es un texto de prueba utilizado para crear múltiples componentes de publicación.",
         style: TextStyle(fontFamily: "Poppins", fontSize: 15),
       ),
@@ -65,7 +65,7 @@ class count extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
+    return Row(children: const [
       Icon(FontAwesome.thumbs_up),
       Padding(
         padding: EdgeInsets.only(left: 5, right: 10),
@@ -92,11 +92,11 @@ class actions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 5),
+      padding: const EdgeInsets.only(top: 5),
       child: Row(
         children: [
-          Flexible(child: Button("Reaccionar", Color(0xff273469), () {})),
-          Flexible(child: Button("Comentar", Color(0xff273469), () {}))
+          Flexible(child: Button("Reaccionar", const Color(0xff273469), () {})),
+          Flexible(child: Button("Comentar", const Color(0xff273469), () {}))
         ],
       ),
     );
@@ -104,7 +104,8 @@ class actions extends StatelessWidget {
 }
 
 class post extends StatelessWidget {
-  const post({super.key});
+  final int index;
+  const post(this.index);
 
   @override
   Widget build(BuildContext context) {
@@ -112,25 +113,47 @@ class post extends StatelessWidget {
 
     return Container(
       width: size.width,
-      color: const Color(0xffe5e5e5),
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      margin: EdgeInsets.only(bottom: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      margin: const EdgeInsets.only(bottom: 5),
+      decoration: const BoxDecoration(
+          color: Color(0xffe5e5e5),
+          borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [avatar(), postText(), count(), actions()]),
+          children: const [avatar(), postText(), count(), actions()]),
     );
   }
 }
 
-class posts extends StatelessWidget {
+class posts extends StatefulWidget {
   const posts({super.key});
 
   @override
+  State<posts> createState() => _postsState();
+}
+
+class _postsState extends State<posts> {
+  final ScrollController controller = ScrollController();
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Column(children: [post(), post()]),
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: SizedBox(
+          child: Scrollbar(
+            thickness: 5,
+            thumbVisibility: false,
+            controller: controller,
+            child: ListView.builder(
+              controller: controller,
+              itemCount: 10,
+              itemBuilder: (context, index) => post(index),
+            ),
+          ),
+        ),
+      );
+    });
   }
 }
