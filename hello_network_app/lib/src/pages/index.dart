@@ -15,6 +15,9 @@ class IndexApp extends StatelessWidget {
 
     final size = MediaQuery.of(context).size;
 
+    final widthBtn = size.width;
+    final heightBtn = size.height * 0.05;
+
     return Scaffold(
       body: Column(
         children: [
@@ -44,10 +47,10 @@ class IndexApp extends StatelessWidget {
                     children: [
                       Button("Iniciar Sesión", const Color(0xff1E2749), () {
                         Navigator.pushNamed(context, "/dashboard");
-                      }),
+                      }, width: widthBtn, height: heightBtn),
                       Button("Crea una cuenta", const Color(0xff30343F), () {
                         print("Crea una cuenta");
-                      }),
+                      }, width: widthBtn, height: heightBtn),
                     ],
                   ),
                   const Text(

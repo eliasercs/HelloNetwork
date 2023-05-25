@@ -8,6 +8,8 @@ class SlideShowPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return MultiProvider(
         providers: [ChangeNotifierProvider(create: (_) => SliderModel())],
         builder: (context, _) {
@@ -20,7 +22,7 @@ class SlideShowPage extends StatelessWidget {
                   margin: const EdgeInsets.all(10),
                   child: Button("Empezar", const Color(0xff273469), () {
                     Navigator.pushNamed(context, "/home");
-                  }),
+                  }, width: size.width, height: size.height * 0.05),
                 ),
               ]),
             ),

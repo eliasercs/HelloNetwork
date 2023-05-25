@@ -13,8 +13,9 @@ class avatar extends StatelessWidget {
       children: [
         Container(
           margin: const EdgeInsets.only(right: 10.0),
-          child: ProfileAvatar(
-              50, 50, "https://www.w3schools.com/howto/img_avatar.png"),
+          child: ProfileAvatar(50, 50, "graphics/profile/avatar_user.jpg", () {
+            print("Perfil de otro usuario");
+          }),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
