@@ -53,7 +53,7 @@ class tab extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         _tabButton("Tablero Personal", "graphics/bg/1.jpg", () {
-          print("Personal");
+          Navigator.pushNamed(context, "/kanban");
         }),
         _tabButton("Tablero de Proyectos", "graphics/bg/2.jpg", () {
           print("Proyectos");

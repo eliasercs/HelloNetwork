@@ -218,7 +218,7 @@ class profilePage extends StatelessWidget {
       body: SafeArea(
           child: Column(
         children: [
-          navbarRoute(),
+          navbarRoute("Perfil de Usuario"),
           navBarProfile(id),
           Expanded(child: profileBody())
         ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hello_network_app/src/pages/dashboard.dart';
 import 'package:hello_network_app/src/pages/index.dart';
+import 'package:hello_network_app/src/pages/kanban.dart';
 import 'package:hello_network_app/src/pages/profile.dart';
 import 'package:hello_network_app/src/pages/slideshow.dart';
 import 'package:hello_network_app/src/pages/test.dart';
@@ -30,6 +31,9 @@ class MainApp extends StatelessWidget {
         "/user": (context) {
           String id = "1";
           return profilePage(id);
+        },
+        "/kanban": (context) {
+          return kanban("Tablero Personal");
         },
         "/test": (BuildContext context) {
           return const TestApp();

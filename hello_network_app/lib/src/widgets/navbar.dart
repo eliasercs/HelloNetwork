@@ -42,7 +42,9 @@ class navbarDashboard extends StatelessWidget {
 }
 
 class navbarRoute extends StatelessWidget {
-  navbarRoute({super.key});
+  final String title;
+
+  navbarRoute(this.title, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,7 @@ class navbarRoute extends StatelessWidget {
             print("back");
           }),
           Text(
-            "Perfil de usuario",
+            title,
             style: TextStyle(
                 fontFamily: "PoppinsMedium", fontSize: 18, color: Colors.white),
           ),
