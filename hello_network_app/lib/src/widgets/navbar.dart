@@ -59,7 +59,6 @@ class navbarRoute extends StatelessWidget {
         children: [
           IconBtn(Color(0xff273469), Color(0xfffca311), Icons.arrow_back, () {
             Navigator.pop(context, true);
-            print("back");
           }),
           Text(
             title,
@@ -68,7 +67,45 @@ class navbarRoute extends StatelessWidget {
           ),
           SizedBox(
             width: size.width * 0.1,
-          )
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class navbarRouteAction extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Function action;
+  const navbarRouteAction(
+      {super.key,
+      required this.title,
+      required this.icon,
+      required this.action});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Container(
+      width: size.width,
+      height: size.height * 0.1,
+      color: const Color(0xff273469),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconBtn(const Color(0xff273469), const Color(0xfffca311),
+              Icons.arrow_back, () {
+            Navigator.pop(context, true);
+          }),
+          Text(
+            title,
+            style: const TextStyle(
+                fontFamily: "PoppinsMedium", fontSize: 18, color: Colors.white),
+          ),
+          IconBtn(const Color(0xff273469), const Color(0xfffca311), icon,
+              () => action()),
         ],
       ),
     );

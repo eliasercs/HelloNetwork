@@ -6,11 +6,12 @@ class ProfileAvatar extends StatelessWidget {
   final String image;
   final Function callback;
 
-  ProfileAvatar(this.width, this.height, this.image, this.callback);
+  const ProfileAvatar(this.width, this.height, this.image, this.callback,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
-    final re = RegExp(r"r^http");
+    final re = RegExp(r"^http");
 
     return GestureDetector(
       onTap: () {

@@ -9,7 +9,7 @@ class Button extends StatelessWidget {
   Color? textColor;
 
   Button(this.value, this.color, this.callback,
-      {this.width, this.height, this.textColor});
+      {super.key, this.width, this.height, this.textColor});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class IconBtn extends StatelessWidget {
   final Color iconColor;
   final IconData icon;
   final Function callback;
-  IconBtn(this.bg, this.iconColor, this.icon, this.callback);
+  const IconBtn(this.bg, this.iconColor, this.icon, this.callback, {super.key});
 
   @override
   Widget build(BuildContext context) {

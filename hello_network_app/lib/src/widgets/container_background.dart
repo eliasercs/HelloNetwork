@@ -5,10 +5,12 @@ class ContainerBackground extends StatelessWidget {
   final Color color;
   final double heightConst;
 
-  ContainerBackground(this.image, this.heightConst, this.color);
+  const ContainerBackground(this.image, this.heightConst, this.color,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
+    final re = RegExp(r"^http");
     final size = MediaQuery.of(context).size;
 
     return Container(
@@ -16,8 +18,11 @@ class ContainerBackground extends StatelessWidget {
       height: size.height * heightConst,
       decoration: BoxDecoration(
           color: color,
-          image:
-              DecorationImage(image: NetworkImage(image), fit: BoxFit.cover)),
+          image: DecorationImage(
+              image: re.hasMatch(image)
+                  ? NetworkImage(image)
+                  : AssetImage(image) as ImageProvider,
+              fit: BoxFit.cover)),
     );
   }
 }

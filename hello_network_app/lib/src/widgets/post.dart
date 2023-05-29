@@ -3,8 +3,8 @@ import "package:hello_network_app/src/widgets/button.dart";
 import "package:hello_network_app/src/widgets/profile.dart";
 import "package:fluttericon/font_awesome_icons.dart";
 
-class avatar extends StatelessWidget {
-  const avatar({super.key});
+class Avatar extends StatelessWidget {
+  const Avatar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +13,8 @@ class avatar extends StatelessWidget {
       children: [
         Container(
           margin: const EdgeInsets.only(right: 10.0),
-          child: ProfileAvatar(50, 50, "graphics/profile/avatar_user.jpg", () {
-            print("Perfil de otro usuario");
-          }),
+          child:
+              ProfileAvatar(50, 50, "graphics/profile/avatar_user.jpg", () {}),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,8 +33,8 @@ class avatar extends StatelessWidget {
   }
 }
 
-class postText extends StatelessWidget {
-  const postText({super.key});
+class PostText extends StatelessWidget {
+  const PostText({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +60,8 @@ class postText extends StatelessWidget {
   }
 }
 
-class count extends StatelessWidget {
-  const count({super.key});
+class Count extends StatelessWidget {
+  const Count({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +86,8 @@ class count extends StatelessWidget {
   }
 }
 
-class actions extends StatelessWidget {
-  const actions({super.key});
+class Actions extends StatelessWidget {
+  const Actions({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -104,9 +103,9 @@ class actions extends StatelessWidget {
   }
 }
 
-class post extends StatelessWidget {
+class Post extends StatelessWidget {
   final int index;
-  const post(this.index);
+  const Post(this.index, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -122,19 +121,19 @@ class post extends StatelessWidget {
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [avatar(), postText(), count(), actions()]),
+          children: const [Avatar(), PostText(), Count(), Actions()]),
     );
   }
 }
 
-class posts extends StatefulWidget {
-  const posts({super.key});
+class Posts extends StatefulWidget {
+  const Posts({super.key});
 
   @override
-  State<posts> createState() => _postsState();
+  State<Posts> createState() => _PostsState();
 }
 
-class _postsState extends State<posts> {
+class _PostsState extends State<Posts> {
   final ScrollController controller = ScrollController();
 
   @override
@@ -148,9 +147,10 @@ class _postsState extends State<posts> {
             thumbVisibility: false,
             controller: controller,
             child: ListView.builder(
+              primary: false,
               controller: controller,
               itemCount: 10,
-              itemBuilder: (context, index) => post(index),
+              itemBuilder: (context, index) => Post(index),
             ),
           ),
         ),

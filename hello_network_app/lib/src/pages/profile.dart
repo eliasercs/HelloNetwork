@@ -44,7 +44,7 @@ class navBarProfile extends StatelessWidget {
       width: size.width,
       height: size.height * 0.25,
       decoration: const BoxDecoration(
-          color: Colors.lightBlue,
+          color: Color(0xff1E2749),
           borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(75),
               bottomRight: Radius.circular(35))),
@@ -58,10 +58,12 @@ class navBarProfile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text("Eliaser Concha",
-                style: TextStyle(fontFamily: "Poppins", fontSize: 25)),
+                style: TextStyle(
+                    fontFamily: "Poppins", fontSize: 25, color: Colors.white)),
             const Text(
               "@eliasercs",
-              style: TextStyle(fontFamily: "Poppins", fontSize: 20),
+              style: TextStyle(
+                  fontFamily: "Poppins", fontSize: 20, color: Colors.white),
             ),
             const SizedBox(
               height: 5,
@@ -69,13 +71,13 @@ class navBarProfile extends StatelessWidget {
             id != "1"
                 ? Button(
                     "Seguir",
-                    Colors.yellow,
+                    const Color(0xfffca311),
                     () {},
-                    textColor: Colors.black,
+                    textColor: Color(0xff1E2749),
                   )
                 : Button(
                     "Settings",
-                    Colors.yellow,
+                    const Color(0xfffca311),
                     settings,
                     textColor: Colors.black,
                   )
@@ -98,8 +100,8 @@ class _cardList extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     return Container(
         width: size.width,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        decoration: BoxDecoration(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        decoration: const BoxDecoration(
           color: Colors.black12,
         ),
         child: Column(
@@ -108,7 +110,7 @@ class _cardList extends StatelessWidget {
             SizedBox(height: 10),
             Container(
               alignment: AlignmentDirectional.centerStart,
-              child: Text(
+              child: const Text(
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
                 style: TextStyle(fontFamily: "Poppins", fontSize: 15),
               ),
@@ -118,8 +120,16 @@ class _cardList extends StatelessWidget {
   }
 }
 
-class card extends StatelessWidget {
-  const card({super.key});
+class CardOne extends StatelessWidget {
+  final String title;
+  final String description;
+  final double height;
+
+  const CardOne(
+      {super.key,
+      required this.title,
+      required this.description,
+      this.height = 50});
 
   @override
   Widget build(BuildContext context) {
@@ -127,18 +137,26 @@ class card extends StatelessWidget {
     return Container(
         width: size.width,
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.black12,
         ),
         child: Column(
           children: [
-            _navCard("Descripción", Icons.dangerous),
-            SizedBox(height: 10),
+            _navCard(title, Icons.dangerous),
+            const SizedBox(height: 10),
             Container(
+              height: height,
               alignment: AlignmentDirectional.centerStart,
-              child: Text(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
-                style: TextStyle(fontFamily: "Poppins", fontSize: 15),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: RichText(
+                    textAlign: TextAlign.justify,
+                    text: TextSpan(
+                        text: description,
+                        style: const TextStyle(
+                            fontFamily: "Poppins",
+                            fontSize: 15,
+                            color: Colors.black))),
               ),
             )
           ],
@@ -155,19 +173,24 @@ class profileBody extends StatelessWidget {
     return Container(
       width: size.width,
       height: size.height,
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
-                followsNumbers(),
-                SizedBox(height: 5),
-                card(),
-                SizedBox(height: 5),
-                _cardList("Educación", Icons.abc),
-                SizedBox(height: 5),
-                _cardList("Experiencia Laboral", Icons.abc),
+                const followsNumbers(),
+                const SizedBox(height: 5),
+                CardOne(
+                  height: (size.height * 0.2),
+                  title: "Descripción",
+                  description:
+                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                ),
+                const SizedBox(height: 5),
+                const _cardList("Educación", Icons.abc),
+                const SizedBox(height: 5),
+                const _cardList("Experiencia Laboral", Icons.abc),
               ],
             )),
       ),

@@ -7,6 +7,7 @@ environment:
   sdk: '>=2.19.4 <3.0.0'
 
 dependencies:
+  blur: ^3.1.0
   flutter:
     sdk: flutter
   fluttericon: ^2.0.0

@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:hello_network_app/src/models/SliderModel.dart";
+import 'package:hello_network_app/src/models/slider_model.dart';
 import "package:hello_network_app/src/widgets/button.dart";
 import "package:provider/provider.dart";
 
@@ -41,6 +41,29 @@ class _Slider extends StatefulWidget {
 // Colección de slides
 class _SliderState extends State<_Slider> {
   final pageViewController = PageController();
+  final List<Map> data = [
+    {
+      "title": "Ofrecemos comunicación segura con otros usuarios de tu red.",
+      "description":
+          "Respetamos la privacidad de nuestros usuarios, es por eso que cada conversación está cifrada de extremo a extremo.",
+      "url":
+          "https://images.pexels.com/photos/12903578/pexels-photo-12903578.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+      "title": "Medimos el progreso de cada una de tus actividades.",
+      "description":
+          "Te ofrecemos tableros en los que puedes medir el progreso de tus tareas de manera visual.",
+      "url":
+          "https://images.pexels.com/photos/12903578/pexels-photo-12903578.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    },
+    {
+      "title": "La solución perfecta a la gestión de tu trabajo.",
+      "description":
+          "Te notificamos con anticipación cada vez que tienes trabajo o actividades pendientes.",
+      "url":
+          "https://images.pexels.com/photos/12903578/pexels-photo-12903578.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+    }
+  ];
 
   @override
   void initState() {
@@ -64,25 +87,11 @@ class _SliderState extends State<_Slider> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: PageView(
+    return PageView.builder(
         controller: pageViewController,
-        children: const <Widget>[
-          _Slide(
-              "Ofrecemos comunicación segura con otros usuarios de tu red.",
-              "Respetamos la privacidad de nuestros usuarios, es por eso que cada conversación está cifrada de extremo a extremo.",
-              "https://images.pexels.com/photos/15443094/pexels-photo-15443094.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"),
-          _Slide(
-              "Medimos el progreso de cada una de tus actividades.",
-              "Te ofrecemos tableros en los que puedes medir el progreso de tus tareas de manera visual.",
-              "https://images.pexels.com/photos/16325656/pexels-photo-16325656.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
-          _Slide(
-              "La solución perfecta a la gestión de tu trabajo.",
-              "Te notificamos con anticipación cada vez que tienes trabajo o actividades pendientes.",
-              "https://images.pexels.com/photos/12903578/pexels-photo-12903578.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")
-        ],
-      ),
-    );
+        itemCount: data.length,
+        itemBuilder: (context, index) => _Slide(data[index]["title"],
+            data[index]["description"], data[index]["url"]));
   }
 }
 
@@ -95,33 +104,43 @@ class _Slide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Column(
+    return Column(
       //crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         _CircleBackground(imageURL),
-        Container(
-          margin: const EdgeInsets.all(10),
-          padding: const EdgeInsets.all(16),
-          child: Text(
-            title,
-            maxLines: 3,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-                fontFamily: 'Poppins', fontSize: 25, color: Color(0xff03045E)),
-          ),
-        ),
-        Container(
-          //margin: EdgeInsets.all(10),
-          padding: const EdgeInsets.all(16),
-          child: Text(
-            description,
-            textAlign: TextAlign.justify,
-            style: const TextStyle(fontFamily: "Poppins", fontSize: 15),
-          ),
-        )
+        Expanded(
+            child: Container(
+                //color: Colors.black,
+                padding: const EdgeInsets.all(16),
+                child: Center(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            title,
+                            maxLines: 3,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 25,
+                                color: Color(0xff03045E)),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            description,
+                            textAlign: TextAlign.justify,
+                            style: const TextStyle(
+                                fontFamily: "Poppins", fontSize: 15),
+                          )
+                        ]),
+                  ),
+                ))),
       ],
-    ));
+    );
   }
 }
 
@@ -131,12 +150,12 @@ class _Dots extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: 70,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[_Dot(0), _Dot(1), _Dot(2)],
+        children: const <Widget>[_Dot(0), _Dot(1), _Dot(2)],
       ),
     );
   }
@@ -146,7 +165,7 @@ class _Dots extends StatelessWidget {
 class _Dot extends StatelessWidget {
   final int index;
 
-  _Dot(this.index);
+  const _Dot(this.index);
 
   @override
   Widget build(BuildContext context) {
@@ -184,7 +203,7 @@ class _CircleBackground extends StatelessWidget {
         color: const Color(0xff273469),
         image: DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
         borderRadius: const BorderRadius.vertical(
-          bottom: Radius.elliptical(200.0, 80.0),
+          bottom: Radius.elliptical(300, 200),
         ),
         boxShadow: const [
           BoxShadow(

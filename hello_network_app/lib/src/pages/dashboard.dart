@@ -13,9 +13,9 @@ class Dashboard extends StatelessWidget {
       body: SafeArea(
         child: Column(children: [
           navbarDashboard("Eliaser", "Concha"),
-          tab(),
-          inputPost(),
-          Expanded(child: posts())
+          const Tabs(),
+          const inputPost(),
+          const Expanded(child: Posts())
         ]),
       ),
     );
