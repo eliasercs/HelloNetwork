@@ -65,7 +65,8 @@ class _MyApp extends StatelessWidget {
         "/select_project": (context) => const SelectProject(),
         "/view_project": (context) => const ViewProject(),
         "/select_sprint": (context) => const SprintView(),
-        "/signup": (context) => SignUp()
+        "/signup": (context) => SignUp(),
+        "/signin": (context) => LogIn()
       },
     );
   }

@@ -66,12 +66,14 @@ class _View extends StatelessWidget {
   final Widget inputs;
   final String btnTitle;
   final Function btnAction;
+  final double? heightForm;
   _View(
       {super.key,
       required this.title,
       required this.inputs,
       required this.btnTitle,
-      required this.btnAction});
+      required this.btnAction,
+      this.heightForm});
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +97,7 @@ class _View extends StatelessWidget {
         ),
         FormOf(
           widgets: inputs,
+          height: heightForm,
         ),
         Button(
           btnTitle,
@@ -148,6 +151,36 @@ class SignUp extends StatelessWidget {
               title: "Registro",
               inputs: SignUpInputs(),
               btnTitle: "Registrarse",
+              btnAction: () {},
+            ))
+          ],
+        )
+      ]),
+    );
+  }
+}
+
+class LogIn extends StatelessWidget {
+  const LogIn({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: Stack(children: [
+        Container(
+          color: Colors.black12,
+          child: _Background(),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _Body(
+                widgets: _View(
+              title: "Inicia sesión",
+              inputs: SignInInputs(),
+              btnTitle: "Iniciar sesión",
+              heightForm: size.height * 0.2,
               btnAction: () {},
             ))
           ],

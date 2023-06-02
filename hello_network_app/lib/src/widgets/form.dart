@@ -202,6 +202,33 @@ class SignUpInputs extends StatelessWidget {
   }
 }
 
+class SignInInputs extends StatelessWidget {
+  const SignInInputs({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        InputWithIcon(
+          placeholder: "jhondoe@mail.com",
+          icon: Icon(Icons.email),
+          inputType: TextInputType.emailAddress,
+          label: "Correo Electrónico",
+        ),
+        _SeparatorInputs(),
+        InputWithIcon(
+          placeholder: "*********",
+          icon: Icon(Icons.password),
+          inputType: TextInputType.visiblePassword,
+          label: "Contraseña",
+        )
+      ],
+    );
+  }
+}
+
 class _SeparatorInputs extends StatelessWidget {
   const _SeparatorInputs({
     super.key,
