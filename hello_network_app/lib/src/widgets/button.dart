@@ -57,3 +57,21 @@ class IconBtn extends StatelessWidget {
         ));
   }
 }
+
+class SocialIcon extends StatelessWidget {
+  final Icon icon;
+  final String text;
+  const SocialIcon({super.key, required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+        onPressed: () {},
+        icon: icon,
+        label: Text(
+          text,
+          style: TextStyle(
+              fontFamily: "Poppins", fontSize: 15, color: Colors.black),
+        ));
+  }
+}

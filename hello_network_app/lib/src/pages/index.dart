@@ -48,8 +48,9 @@ class IndexApp extends StatelessWidget {
                       Button("Iniciar Sesión", const Color(0xff1E2749), () {
                         Navigator.pushNamed(context, "/dashboard");
                       }, width: widthBtn, height: heightBtn),
-                      Button("Crea una cuenta", const Color(0xff30343F), () {},
-                          width: widthBtn, height: heightBtn),
+                      Button("Crea una cuenta", const Color(0xff30343F), () {
+                        Navigator.pushNamed(context, "/signup");
+                      }, width: widthBtn, height: heightBtn),
                     ],
                   ),
                   const Text(

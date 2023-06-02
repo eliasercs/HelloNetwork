@@ -6,6 +6,7 @@ import 'package:hello_network_app/src/pages/index.dart';
 import 'package:hello_network_app/src/pages/kanban.dart';
 import 'package:hello_network_app/src/pages/profile.dart';
 import 'package:hello_network_app/src/pages/project.dart';
+import 'package:hello_network_app/src/pages/sign_up.dart';
 import 'package:hello_network_app/src/pages/slideshow.dart';
 
 import "package:flutter/services.dart";
@@ -64,6 +65,7 @@ class _MyApp extends StatelessWidget {
         "/select_project": (context) => const SelectProject(),
         "/view_project": (context) => const ViewProject(),
         "/select_sprint": (context) => const SprintView(),
+        "/signup": (context) => SignUp()
       },
     );
   }
