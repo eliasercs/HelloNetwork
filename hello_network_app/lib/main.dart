@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_network_app/src/models/form_model.dart';
 import 'package:hello_network_app/src/models/project_model.dart';
 import 'package:hello_network_app/src/models/tablero_model.dart';
 import 'package:hello_network_app/src/pages/dashboard.dart';
@@ -28,7 +29,9 @@ class MainApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => TableroModel()),
         ChangeNotifierProvider(create: (_) => ProjectModel()),
-        ChangeNotifierProvider(create: (_) => ProjectSelected())
+        ChangeNotifierProvider(create: (_) => ProjectSelected()),
+        ChangeNotifierProvider(create: (_) => NewUserModel()),
+        ChangeNotifierProvider(create: (_) => ErrorModel())
       ],
       builder: (context, _) => _MyApp(),
     );

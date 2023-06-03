@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hello_network_app/src/models/form_model.dart';
 import 'package:hello_network_app/src/widgets/button.dart';
 import 'package:hello_network_app/src/widgets/container_background.dart';
 import 'package:hello_network_app/src/widgets/wave.dart';
+import 'package:provider/provider.dart';
 
 // Este widget corresponde a la vista principal con la imagen y los imputs
 
@@ -46,9 +48,17 @@ class IndexApp extends StatelessWidget {
                   Column(
                     children: [
                       Button("Iniciar Sesión", const Color(0xff1E2749), () {
+                        Provider.of<ErrorModel>(context, listen: false)
+                            .setStateErrorForm("login");
+                        Provider.of<ErrorModel>(context, listen: false)
+                            .setError();
                         Navigator.pushNamed(context, "/signin");
                       }, width: widthBtn, height: heightBtn),
                       Button("Crea una cuenta", const Color(0xff30343F), () {
+                        Provider.of<ErrorModel>(context, listen: false)
+                            .setStateErrorForm("signup");
+                        Provider.of<ErrorModel>(context, listen: false)
+                            .setError();
                         Navigator.pushNamed(context, "/signup");
                       }, width: widthBtn, height: heightBtn),
                     ],

@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
+import "package:hello_network_app/src/models/form_model.dart";
 import "package:hello_network_app/src/widgets/button.dart";
 import "package:hello_network_app/src/widgets/form.dart";
 import "package:fluttericon/font_awesome5_icons.dart";
+import "package:provider/provider.dart";
 
 class _BackgroundPainter extends CustomPainter {
   @override
@@ -91,8 +93,10 @@ class _View extends StatelessWidget {
                 style: TextStyle(fontFamily: "PoppinsMedium", fontSize: 25),
               ),
             ),
-            IconBtn(Colors.white, Colors.black, Icons.close,
-                () => Navigator.pop(context, true))
+            IconBtn(Colors.white, Colors.black, Icons.close, () {
+              Navigator.pop(context, true);
+              Provider.of<ErrorModel>(context, listen: false).setError();
+            })
           ],
         ),
         FormOf(
@@ -132,36 +136,15 @@ class _OSeparator extends StatelessWidget {
   }
 }
 
-class SignUp extends StatelessWidget {
+class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(children: [
-        Container(
-          color: Colors.black12,
-          child: _Background(),
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _Body(
-                widgets: _View(
-              title: "Registro",
-              inputs: SignUpInputs(),
-              btnTitle: "Registrarse",
-              btnAction: () {},
-            ))
-          ],
-        )
-      ]),
-    );
-  }
+  State<SignUp> createState() => _SignUpState();
 }
 
-class LogIn extends StatelessWidget {
-  const LogIn({super.key});
+class _SignUpState extends State<SignUp> {
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -175,14 +158,61 @@ class LogIn extends StatelessWidget {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _Body(
-                widgets: _View(
-              title: "Inicia sesión",
-              inputs: SignInInputs(),
-              btnTitle: "Iniciar sesión",
-              heightForm: size.height * 0.2,
-              btnAction: () {},
-            ))
+            Form(
+              key: _formKey,
+              child: _Body(
+                  widgets: _View(
+                title: "Registro",
+                inputs: SignUpInputs(),
+                btnTitle: "Registrarse",
+                btnAction: () {
+                  if (_formKey.currentState!.validate()) {
+                    //print(Provider.of<NewUserModel>(context, listen: false)
+                    //    .newUser);
+                  }
+                },
+              )),
+            )
+          ],
+        )
+      ]),
+    );
+  }
+}
+
+class LogIn extends StatefulWidget {
+  const LogIn({super.key});
+
+  @override
+  State<LogIn> createState() => _LogInState();
+}
+
+class _LogInState extends State<LogIn> {
+  final _formKey = GlobalKey<FormState>();
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: Stack(children: [
+        Container(
+          color: Colors.black12,
+          child: _Background(),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Form(
+                key: _formKey,
+                child: _Body(
+                    widgets: _View(
+                  title: "Inicia sesión",
+                  inputs: SignInInputs(),
+                  btnTitle: "Iniciar sesión",
+                  heightForm: size.height * 0.2,
+                  btnAction: () {
+                    if (_formKey.currentState!.validate()) {}
+                  },
+                )))
           ],
         )
       ]),

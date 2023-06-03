@@ -1,5 +1,9 @@
 import "package:flutter/material.dart";
-import "package:hello_network_app/src/widgets/button.dart";
+import "package:hello_network_app/src/models/form_model.dart";
+//import "package:hello_network_app/src/widgets/button.dart";
+import "package:provider/provider.dart";
+
+import "../utils/validate.dart";
 
 class inputText extends StatelessWidget {
   inputText();
@@ -62,12 +66,16 @@ class InputWithIcon extends StatefulWidget {
   final Icon icon;
   final TextInputType inputType;
   final String label;
+  final String attribute;
+  final Function validator;
   const InputWithIcon(
       {super.key,
       required this.placeholder,
       required this.icon,
       required this.inputType,
-      required this.label});
+      required this.label,
+      required this.validator,
+      required this.attribute});
 
   @override
   State<InputWithIcon> createState() => _InputWithIconState();
@@ -76,21 +84,32 @@ class InputWithIcon extends StatefulWidget {
 class _InputWithIconState extends State<InputWithIcon> {
   TextEditingController controller = TextEditingController();
   Color prefColor = Colors.white;
+  late List error;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    /*
+    Provider.of<ErrorModel>(context).addListener(() {
+      Provider.of<ErrorModel>(context, listen: false)
+          .setErrorSignUp(widget.attribute, []);
+    });
+    */
   }
 
   @override
   void dispose() {
     controller.dispose();
+    //Provider.of<ErrorModel>(context).dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    error = Provider.of<ErrorModel>(context, listen: true)
+        .getError(widget.attribute);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -106,7 +125,16 @@ class _InputWithIconState extends State<InputWithIcon> {
             child: TextFormField(
               keyboardType: widget.inputType,
               controller: controller,
+              obscureText: widget.inputType == TextInputType.visiblePassword
+                  ? true
+                  : false,
               cursorColor: Color(0xffF9A826),
+              onSaved: (value) {
+                print(value);
+              },
+              validator: (value) {
+                widget.validator(value);
+              },
               style: TextStyle(color: Color(0xffF9A826)),
               onChanged: (text) {
                 if (text.isNotEmpty) {
@@ -123,7 +151,19 @@ class _InputWithIconState extends State<InputWithIcon> {
                   focusColor: Color(0xffF9A826),
                   prefixIcon: widget.icon,
                   prefixIconColor: prefColor),
-            ))
+            )),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List.generate(
+              error.length,
+              (index) => Text(
+                    error[index],
+                    style: const TextStyle(
+                        fontFamily: "PoppinsMedium",
+                        fontSize: 12,
+                        color: Colors.red),
+                  )),
+        )
       ],
     );
   }
@@ -169,6 +209,18 @@ class SignUpInputs extends StatelessWidget {
         icon: Icon(Icons.person),
         inputType: TextInputType.name,
         label: "Nombre",
+        attribute: "name",
+        validator: (String value) {
+          if (validateString(value)) {
+            Provider.of<NewUserModel>(context, listen: false)
+                .setProperty("name", value);
+            Provider.of<ErrorModel>(context, listen: false)
+                .addError("name", []);
+          } else {
+            Provider.of<ErrorModel>(context, listen: false).addError(
+                "name", ["El campo nombre no debe ser una cadena vacía."]);
+          }
+        },
       ),
       _SeparatorInputs(),
       InputWithIcon(
@@ -176,6 +228,18 @@ class SignUpInputs extends StatelessWidget {
         icon: Icon(Icons.person),
         inputType: TextInputType.name,
         label: "Apellido",
+        attribute: "lastname",
+        validator: (String value) {
+          if (validateString(value)) {
+            Provider.of<NewUserModel>(context, listen: false)
+                .setProperty("lastname", value);
+            Provider.of<ErrorModel>(context, listen: false)
+                .addError("lastname", []);
+          } else {
+            Provider.of<ErrorModel>(context, listen: false).addError(
+                "lastname", ["El campo nombre no debe ser una cadena vacía."]);
+          }
+        },
       ),
       _SeparatorInputs(),
       InputWithIcon(
@@ -183,6 +247,18 @@ class SignUpInputs extends StatelessWidget {
         icon: Icon(Icons.email),
         inputType: TextInputType.emailAddress,
         label: "Correo Electrónico",
+        attribute: "email",
+        validator: (value) {
+          if (validateEmail(value)) {
+            Provider.of<NewUserModel>(context, listen: false)
+                .setProperty("email", value);
+            Provider.of<ErrorModel>(context, listen: false)
+                .addError("email", []);
+          } else {
+            Provider.of<ErrorModel>(context, listen: false)
+                .addError("email", ["Correo Electrónico no válido."]);
+          }
+        },
       ),
       _SeparatorInputs(),
       InputWithIcon(
@@ -190,6 +266,20 @@ class SignUpInputs extends StatelessWidget {
         icon: Icon(Icons.password),
         inputType: TextInputType.visiblePassword,
         label: "Contraseña",
+        attribute: "password",
+        validator: (value) {
+          List<String> error = [];
+          bool isPassword = validatePassword(value, 8, error);
+          if (isPassword) {
+            Provider.of<NewUserModel>(context, listen: false)
+                .setProperty("password", value);
+            Provider.of<ErrorModel>(context, listen: false)
+                .addError("password", []);
+          } else {
+            Provider.of<ErrorModel>(context, listen: false)
+                .addError("password", error);
+          }
+        },
       ),
       _SeparatorInputs(),
       InputWithIcon(
@@ -197,6 +287,20 @@ class SignUpInputs extends StatelessWidget {
         icon: Icon(Icons.password),
         inputType: TextInputType.visiblePassword,
         label: "Repetir Contraseña",
+        attribute: "repeat_password",
+        validator: (value) {
+          List<String> error = [];
+          bool isPassword = validatePassword(value, 8, error);
+          if (isPassword) {
+            Provider.of<NewUserModel>(context, listen: false)
+                .setProperty("repeat_password", value);
+            Provider.of<ErrorModel>(context, listen: false)
+                .addError("repeat_password", []);
+          } else {
+            Provider.of<ErrorModel>(context, listen: false)
+                .addError("repeat_password", error);
+          }
+        },
       ),
     ]);
   }
@@ -216,6 +320,18 @@ class SignInInputs extends StatelessWidget {
           icon: Icon(Icons.email),
           inputType: TextInputType.emailAddress,
           label: "Correo Electrónico",
+          attribute: "email",
+          validator: (value) {
+            if (validateEmail(value)) {
+              //Provider.of<NewUserModel>(context, listen: false)
+              //    .setProperty("email", value);
+              Provider.of<ErrorModel>(context, listen: false)
+                  .addError("email", []);
+            } else {
+              Provider.of<ErrorModel>(context, listen: false)
+                  .addError("email", ["Correo Electrónico no válido."]);
+            }
+          },
         ),
         _SeparatorInputs(),
         InputWithIcon(
@@ -223,6 +339,20 @@ class SignInInputs extends StatelessWidget {
           icon: Icon(Icons.password),
           inputType: TextInputType.visiblePassword,
           label: "Contraseña",
+          attribute: "password",
+          validator: (value) {
+            List<String> error = [];
+            bool isPassword = validatePassword(value, 8, error);
+            if (isPassword) {
+              //Provider.of<NewUserModel>(context, listen: false)
+              //    .setProperty("password", value);
+              Provider.of<ErrorModel>(context, listen: false)
+                  .addError("password", []);
+            } else {
+              Provider.of<ErrorModel>(context, listen: false)
+                  .addError("password", error);
+            }
+          },
         )
       ],
     );
