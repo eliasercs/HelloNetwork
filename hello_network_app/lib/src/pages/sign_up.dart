@@ -5,6 +5,8 @@ import "package:hello_network_app/src/widgets/form.dart";
 import "package:fluttericon/font_awesome5_icons.dart";
 import "package:provider/provider.dart";
 
+import "../utils/preferences.dart";
+
 class _BackgroundPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -96,6 +98,10 @@ class _View extends StatelessWidget {
             IconBtn(Colors.white, Colors.black, Icons.close, () {
               Navigator.pop(context, true);
               Provider.of<ErrorModel>(context, listen: false).setError();
+              var p1 = Preferences();
+              var p2 = Preferences();
+
+              print(p1.hashCode == p2.hashCode);
             })
           ],
         ),

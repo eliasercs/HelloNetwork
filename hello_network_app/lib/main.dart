@@ -11,9 +11,14 @@ import 'package:hello_network_app/src/pages/sign_up.dart';
 import 'package:hello_network_app/src/pages/slideshow.dart';
 
 import "package:flutter/services.dart";
+import 'package:hello_network_app/src/utils/preferences.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+Preferences _p = Preferences();
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await _p.initPrefs();
   runApp(const MainApp());
 }
 
@@ -50,7 +55,8 @@ class _MyApp extends StatelessWidget {
       initialRoute: "/",
       routes: <String, WidgetBuilder>{
         "/": (BuildContext context) {
-          return const SlideShowPage();
+          return _p.onBoarding ? const SlideShowPage() : const IndexApp();
+          //return const SlideShowPage();
         },
         "/home": (BuildContext context) {
           return const IndexApp();

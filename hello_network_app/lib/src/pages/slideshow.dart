@@ -1,7 +1,10 @@
 import "package:flutter/material.dart";
 import 'package:hello_network_app/src/models/slider_model.dart';
+import "package:hello_network_app/src/utils/preferences.dart";
 import "package:hello_network_app/src/widgets/button.dart";
 import "package:provider/provider.dart";
+
+Preferences _pref = Preferences();
 
 class SlideShowPage extends StatelessWidget {
   const SlideShowPage({super.key});
@@ -21,6 +24,7 @@ class SlideShowPage extends StatelessWidget {
                 Container(
                   margin: const EdgeInsets.all(10),
                   child: Button("Empezar", const Color(0xff273469), () {
+                    _pref.setBoarding(true);
                     Navigator.pushNamed(context, "/home");
                   }, width: size.width, height: size.height * 0.05),
                 ),
