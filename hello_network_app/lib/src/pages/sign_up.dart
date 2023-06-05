@@ -1,10 +1,15 @@
 import "package:flutter/material.dart";
 import "package:hello_network_app/src/models/form_model.dart";
 import "package:hello_network_app/src/widgets/button.dart";
+import "package:hello_network_app/src/widgets/dialog.dart";
 import "package:hello_network_app/src/widgets/form.dart";
 import "package:fluttericon/font_awesome5_icons.dart";
 import "package:provider/provider.dart";
 
+import "package:http/http.dart" as http;
+import 'dart:convert' as convert;
+
+import "../utils/api.dart";
 import "../utils/preferences.dart";
 
 class _BackgroundPainter extends CustomPainter {
@@ -171,10 +176,44 @@ class _SignUpState extends State<SignUp> {
                 title: "Registro",
                 inputs: SignUpInputs(),
                 btnTitle: "Registrarse",
-                btnAction: () {
+                btnAction: () async {
                   if (_formKey.currentState!.validate()) {
-                    //print(Provider.of<NewUserModel>(context, listen: false)
-                    //    .newUser);
+                    final newUser =
+                        Provider.of<NewUserModel>(context, listen: false)
+                            .newUser;
+                    // Si tienes los 5 datos
+                    if (newUser.length == 5) {
+                      if (newUser["password"] != newUser["repeat_password"]) {
+                        return newDialog(
+                            context: context,
+                            title: "Advertencia",
+                            content: "Las contraseñas no coinciden.");
+                      }
+
+                      try {
+                        Map<String, dynamic> data = await ApiServices()
+                            .addNewUser(newUser["name"], newUser["lastname"],
+                                newUser["email"], newUser["password"]);
+                        // ignore: use_build_context_synchronously
+                        newDialog(
+                            context: context,
+                            title: "Información",
+                            content: data["msg"]);
+                        // ignore: use_build_context_synchronously
+                        Provider.of<NewUserModel>(context, listen: false)
+                            .setNewUser({});
+                      } on Exception catch (e) {
+                        newDialog(
+                            context: context,
+                            title: "Exception",
+                            content: e.toString());
+                      }
+                    } else {
+                      return newDialog(
+                          context: context,
+                          title: "Advertencia",
+                          content: "Aún te falta campos por llenar.");
+                    }
                   }
                 },
               )),

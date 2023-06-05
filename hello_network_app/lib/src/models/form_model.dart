@@ -21,6 +21,8 @@ class NewUserModel extends ChangeNotifier {
 
   Map<String, dynamic> get newUser => _new_user;
 
+  bool issetProperty(String key) => _new_user[key] != null ? true : false;
+
   void setProperty(String key, dynamic value) {
     _new_user[key] = value;
     notifyListeners();
