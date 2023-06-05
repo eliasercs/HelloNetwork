@@ -103,10 +103,6 @@ class _View extends StatelessWidget {
             IconBtn(Colors.white, Colors.black, Icons.close, () {
               Navigator.pop(context, true);
               Provider.of<ErrorModel>(context, listen: false).setError();
-              var p1 = Preferences();
-              var p2 = Preferences();
-
-              print(p1.hashCode == p2.hashCode);
             })
           ],
         ),
@@ -201,7 +197,7 @@ class _SignUpState extends State<SignUp> {
                             content: data["msg"]);
                         // ignore: use_build_context_synchronously
                         Provider.of<NewUserModel>(context, listen: false)
-                            .setNewUser({});
+                            .reset();
                       } on Exception catch (e) {
                         newDialog(
                             context: context,

@@ -32,6 +32,11 @@ class NewUserModel extends ChangeNotifier {
     _new_user = data;
     notifyListeners();
   }
+
+  void reset() {
+    _new_user = {};
+    notifyListeners();
+  }
 }
 
 class ErrorModel extends ChangeNotifier {
