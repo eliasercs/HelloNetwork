@@ -11,6 +11,7 @@ import 'package:hello_network_app/src/pages/sign_up.dart';
 import 'package:hello_network_app/src/pages/slideshow.dart';
 
 import "package:flutter/services.dart";
+import 'package:hello_network_app/src/utils/handle_routes.dart';
 import 'package:hello_network_app/src/utils/preferences.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +20,8 @@ Preferences _p = Preferences();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _p.initPrefs();
+  print(_p.tokenAuth);
+  print(_p.onBoarding);
   runApp(const MainApp());
 }
 
@@ -35,7 +38,7 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => TableroModel()),
         ChangeNotifierProvider(create: (_) => ProjectModel()),
         ChangeNotifierProvider(create: (_) => ProjectSelected()),
-        ChangeNotifierProvider(create: (_) => NewUserModel()),
+        ChangeNotifierProvider(create: (_) => UserFormModel()),
         ChangeNotifierProvider(create: (_) => ErrorModel())
       ],
       builder: (context, _) => _MyApp(),
@@ -54,13 +57,8 @@ class _MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: "/",
       routes: <String, WidgetBuilder>{
-        "/": (BuildContext context) {
-          return _p.onBoarding ? const SlideShowPage() : const IndexApp();
-          //return const SlideShowPage();
-        },
-        "/home": (BuildContext context) {
-          return const IndexApp();
-        },
+        "/": (BuildContext context) => checkOnBoarding(),
+        "/home": (BuildContext context) => checkAuth(Dashboard()),
         "/dashboard": (BuildContext context) {
           return const Dashboard();
         },

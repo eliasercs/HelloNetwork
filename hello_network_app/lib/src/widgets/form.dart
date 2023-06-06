@@ -212,7 +212,7 @@ class SignUpInputs extends StatelessWidget {
         attribute: "name",
         validator: (String value) {
           if (validateString(value)) {
-            Provider.of<NewUserModel>(context, listen: false)
+            Provider.of<UserFormModel>(context, listen: false)
                 .setProperty("name", value);
             Provider.of<ErrorModel>(context, listen: false)
                 .addError("name", []);
@@ -231,7 +231,7 @@ class SignUpInputs extends StatelessWidget {
         attribute: "lastname",
         validator: (String value) {
           if (validateString(value)) {
-            Provider.of<NewUserModel>(context, listen: false)
+            Provider.of<UserFormModel>(context, listen: false)
                 .setProperty("lastname", value);
             Provider.of<ErrorModel>(context, listen: false)
                 .addError("lastname", []);
@@ -250,7 +250,7 @@ class SignUpInputs extends StatelessWidget {
         attribute: "email",
         validator: (value) {
           if (validateEmail(value)) {
-            Provider.of<NewUserModel>(context, listen: false)
+            Provider.of<UserFormModel>(context, listen: false)
                 .setProperty("email", value);
             Provider.of<ErrorModel>(context, listen: false)
                 .addError("email", []);
@@ -271,7 +271,7 @@ class SignUpInputs extends StatelessWidget {
           List<String> error = [];
           bool isPassword = validatePassword(value, 8, error);
           if (isPassword) {
-            Provider.of<NewUserModel>(context, listen: false)
+            Provider.of<UserFormModel>(context, listen: false)
                 .setProperty("password", value);
             Provider.of<ErrorModel>(context, listen: false)
                 .addError("password", []);
@@ -292,7 +292,7 @@ class SignUpInputs extends StatelessWidget {
           List<String> error = [];
           bool isPassword = validatePassword(value, 8, error);
           if (isPassword) {
-            Provider.of<NewUserModel>(context, listen: false)
+            Provider.of<UserFormModel>(context, listen: false)
                 .setProperty("repeat_password", value);
             Provider.of<ErrorModel>(context, listen: false)
                 .addError("repeat_password", []);
@@ -323,8 +323,8 @@ class SignInInputs extends StatelessWidget {
           attribute: "email",
           validator: (value) {
             if (validateEmail(value)) {
-              //Provider.of<NewUserModel>(context, listen: false)
-              //    .setProperty("email", value);
+              Provider.of<UserFormModel>(context, listen: false)
+                  .setProperty("email", value);
               Provider.of<ErrorModel>(context, listen: false)
                   .addError("email", []);
             } else {
@@ -344,8 +344,8 @@ class SignInInputs extends StatelessWidget {
             List<String> error = [];
             bool isPassword = validatePassword(value, 8, error);
             if (isPassword) {
-              //Provider.of<NewUserModel>(context, listen: false)
-              //    .setProperty("password", value);
+              Provider.of<UserFormModel>(context, listen: false)
+                  .setProperty("password", value);
               Provider.of<ErrorModel>(context, listen: false)
                   .addError("password", []);
             } else {

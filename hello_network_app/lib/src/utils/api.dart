@@ -23,4 +23,18 @@ class ApiServices {
       throw Exception("[STATUS $status]");
     }
   }
+
+  Future<dynamic> getUser(String email, String password) async {
+    var url = Uri.parse("http://10.0.2.2:8000/api/auth/signin");
+    var data = convert.jsonEncode({"email": email, "password": password});
+    final response = await http.post(url, body: data, headers: <String, String>{
+      'Content-Type': 'application/json',
+    });
+
+    if (response.statusCode == 200 || response.statusCode == 400) {
+      return convert.jsonDecode(response.body);
+    } else {
+      throw Exception("Error al realizar petición.");
+    }
+  }
 }

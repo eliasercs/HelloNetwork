@@ -14,27 +14,27 @@ Map<String, dynamic> _defaultLogInError() {
   return {"email": <String>[], "password": <String>[]};
 }
 
-class NewUserModel extends ChangeNotifier {
-  Map<String, dynamic> _new_user = {};
+class UserFormModel extends ChangeNotifier {
+  Map<String, dynamic> _user = {};
 
-  dynamic value(key) => _new_user[key];
+  dynamic value(key) => _user[key];
 
-  Map<String, dynamic> get newUser => _new_user;
+  Map<String, dynamic> get newUser => _user;
 
-  bool issetProperty(String key) => _new_user[key] != null ? true : false;
+  bool issetProperty(String key) => _user[key] != null ? true : false;
 
   void setProperty(String key, dynamic value) {
-    _new_user[key] = value;
+    _user[key] = value;
     notifyListeners();
   }
 
   void setNewUser(data) {
-    _new_user = data;
+    _user = data;
     notifyListeners();
   }
 
   void reset() {
-    _new_user = {};
+    _user = {};
     notifyListeners();
   }
 }

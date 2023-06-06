@@ -6,9 +6,6 @@ import "package:hello_network_app/src/widgets/form.dart";
 import "package:fluttericon/font_awesome5_icons.dart";
 import "package:provider/provider.dart";
 
-import "package:http/http.dart" as http;
-import 'dart:convert' as convert;
-
 import "../utils/api.dart";
 import "../utils/preferences.dart";
 
@@ -175,7 +172,7 @@ class _SignUpState extends State<SignUp> {
                 btnAction: () async {
                   if (_formKey.currentState!.validate()) {
                     final newUser =
-                        Provider.of<NewUserModel>(context, listen: false)
+                        Provider.of<UserFormModel>(context, listen: false)
                             .newUser;
                     // Si tienes los 5 datos
                     if (newUser.length == 5) {
@@ -196,7 +193,7 @@ class _SignUpState extends State<SignUp> {
                             title: "Información",
                             content: data["msg"]);
                         // ignore: use_build_context_synchronously
-                        Provider.of<NewUserModel>(context, listen: false)
+                        Provider.of<UserFormModel>(context, listen: false)
                             .reset();
                       } on Exception catch (e) {
                         newDialog(
@@ -250,8 +247,44 @@ class _LogInState extends State<LogIn> {
                   inputs: SignInInputs(),
                   btnTitle: "Iniciar sesión",
                   heightForm: size.height * 0.2,
-                  btnAction: () {
-                    if (_formKey.currentState!.validate()) {}
+                  btnAction: () async {
+                    if (_formKey.currentState!.validate()) {
+                      final getUser =
+                          Provider.of<UserFormModel>(context, listen: false)
+                              .newUser;
+                      if (getUser.length == 2) {
+                        try {
+                          final data = await ApiServices()
+                              .getUser(getUser["email"], getUser["password"]);
+                          if (data["statusCode"] == 400) {
+                            // ignore: use_build_context_synchronously
+                            newDialog(
+                                context: context,
+                                title: "Información",
+                                content: data["msg"]);
+                          } else {
+                            final token = data["token"];
+                            final pref = Preferences();
+                            pref.setTokenAuth(token);
+                            // ignore: use_build_context_synchronously
+                            Navigator.pushReplacementNamed(
+                                context, "/dashboard");
+                          }
+                          Provider.of<UserFormModel>(context, listen: false)
+                              .reset();
+                        } on Exception catch (e) {
+                          return newDialog(
+                              context: context,
+                              title: "Exception",
+                              content: e.toString());
+                        }
+                      } else {
+                        return newDialog(
+                            context: context,
+                            title: "Advertencia",
+                            content: "Aún te falta campos por llenar.");
+                      }
+                    }
                   },
                 )))
           ],

@@ -19,7 +19,15 @@ class Preferences {
     return _prefs.getBool("onBoarding") ?? false;
   }
 
+  get tokenAuth {
+    return _prefs.getString("token-auth") ?? "";
+  }
+
   void setBoarding(bool boarding) {
     _prefs.setBool("onBoarding", boarding);
+  }
+
+  void setTokenAuth(String token) {
+    _prefs.setString("token-auth", token);
   }
 }
