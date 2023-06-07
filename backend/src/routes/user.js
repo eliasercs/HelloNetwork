@@ -1,7 +1,8 @@
 const {Router} = require("express")
-const {register} = require("../controllers/users")
+const {register, avatar, getAvatar} = require("../controllers/users")
 const {validateFields} = require("../middlewares/validate")
 const {check} = require("express-validator")
+const upload = require("../middlewares/storage")
 
 const router = Router()
 
@@ -16,5 +17,8 @@ router.post("/signup", [
         .withMessage("Debe ingresar una contraseña con mínimo: 8 carácteres, 1 letra en minúscula, 1 letra en mayúscula, 1 símbolo y 1 número."),
     validateFields
 ], register)
+
+router.post("/avatar", upload.single('avatar'), avatar)
+router.get("/avatar", getAvatar)
 
 module.exports = router
