@@ -33,9 +33,15 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /*
     if (_p.tokenAuth.toString().isNotEmpty) {
-      ApiServices().getUserAuth(context);
+      try {
+        Provider.of<UserModel>(context).initUserAuth();
+      } on Exception catch (e) {
+        print(e);
+      }
     }
+    */
 
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
@@ -72,10 +78,6 @@ class _MyAppState extends State<_MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (_p.tokenAuth.toString().isNotEmpty) {
-      ApiServices().getUserAuth(context);
-    }
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: "/",
@@ -83,9 +85,6 @@ class _MyAppState extends State<_MyApp> {
         "/": (BuildContext context) => checkOnBoarding(context),
         "/home": (BuildContext context) => checkAuth(Dashboard(), context),
         "/dashboard": (BuildContext context) {
-          if (_p.tokenAuth.toString().isNotEmpty) {
-            ApiServices().getUserAuth(context);
-          }
           return const Dashboard();
         },
         "/user": (context) {
@@ -102,12 +101,63 @@ class _MyAppState extends State<_MyApp> {
         "/select_sprint": (context) => const SprintView(),
         "/signup": (context) => SignUp(),
         "/signin": (context) => LogIn(),
-        "/splash": (context) => Scaffold(
-              body: Center(
-                child: Text("Splash Screen"),
-              ),
-            )
+        "/splash": (context) => Loading()
       },
     );
+  }
+}
+
+class Load extends StatefulWidget {
+  const Load({super.key});
+
+  @override
+  State<Load> createState() => _LoadState();
+}
+
+class _LoadState extends State<Load> with TickerProviderStateMixin {
+  late AnimationController controller;
+
+  @override
+  void initState() {
+    controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500))
+          ..addListener(() {
+            setState(() {});
+          });
+    controller.repeat(reverse: true);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CircularProgressIndicator(
+      value: controller.value,
+      strokeWidth: 4,
+      color: Colors.amber,
+      backgroundColor: Colors.black,
+    );
+  }
+}
+
+class Loading extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Map<String, dynamic> user = Provider.of<UserModel>(context).authUser;
+
+    if (user.isNotEmpty) {
+      return Dashboard();
+    }
+
+    return SafeArea(
+        child: Scaffold(
+      body: Center(child: Load()),
+    ));
   }
 }

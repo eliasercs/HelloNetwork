@@ -49,14 +49,17 @@ class ApiServices {
     await http.get(url, headers: <String, String>{"auth-token": _p.tokenAuth});
   }
 
-  Future<void> getUserAuth(context) async {
+  Future<Map<String, dynamic>> getUserAuth() async {
     var url = Uri.parse("http://10.0.2.2:8000/api/users/user_auth");
     final response = await http
         .get(url, headers: <String, String>{"auth-token": _p.tokenAuth});
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = convert.jsonDecode(response.body);
-      Provider.of<UserModel>(context, listen: false).setAuthUser(data);
+      return data;
+      //Provider.of<UserModel>(context, listen: false).setAuthUser(data);
+    } else {
+      throw Exception("Error");
     }
   }
 }

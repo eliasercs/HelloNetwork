@@ -267,7 +267,9 @@ class _LogInState extends State<LogIn> {
                             final token = data["token"];
                             final pref = Preferences();
                             pref.setTokenAuth(token);
-                            await ApiServices().getUserAuth(context);
+                            final auth = await ApiServices().getUserAuth();
+                            Provider.of<UserModel>(context, listen: false)
+                                .setAuthUser(auth);
                             // ignore: use_build_context_synchronously
                             Navigator.pushReplacementNamed(
                                 context, "/dashboard");

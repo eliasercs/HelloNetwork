@@ -7,12 +7,24 @@ import "package:hello_network_app/src/widgets/post.dart";
 import "package:hello_network_app/src/widgets/tab.dart";
 import "package:provider/provider.dart";
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
 
   @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  @override
   Widget build(BuildContext context) {
     Map<String, dynamic> user = Provider.of<UserModel>(context).authUser;
+
+    /*
+    if (user.isEmpty) {
+      Navigator.pushNamed(context, "/splash");
+    }
+    */
+
     print(user);
 
     return Scaffold(
