@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 
 class UserModel extends ChangeNotifier {
-  String _id = "1";
+  bool _userAuth = false;
 
-  String get currentUser => _id;
+  Map<String, dynamic> _user = {};
 
-  void setUser(id) {
-    _id = id;
+  bool get auth => _userAuth;
+
+  Map<String, dynamic> get authUser => _user;
+
+  void setAuth(bool state) {
+    _userAuth = state;
+    notifyListeners();
+  }
+
+  void setAuthUser(Map<String, dynamic> newUser) {
+    _user = newUser;
     notifyListeners();
   }
 }

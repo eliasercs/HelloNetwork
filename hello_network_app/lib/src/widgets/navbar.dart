@@ -5,8 +5,9 @@ import "package:hello_network_app/src/widgets/profile.dart";
 class navbarDashboard extends StatelessWidget {
   final String name;
   final String lastname;
+  final String image;
 
-  navbarDashboard(this.name, this.lastname);
+  navbarDashboard(this.name, this.lastname, this.image);
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +33,18 @@ class navbarDashboard extends StatelessWidget {
               )
             ],
           ),
+          ProfileAvatarBase64(
+              width: 65,
+              height: 65,
+              image: image,
+              callback: () {
+                Navigator.pushNamed(context, "/user");
+              }),
+          /*
           ProfileAvatar(65, 65, "graphics/profile/avatar_user.jpg", () {
             Navigator.pushNamed(context, "/user");
-          }),
+          }
+          ),*/
         ],
       ),
     );

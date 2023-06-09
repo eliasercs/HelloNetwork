@@ -3,6 +3,8 @@ const User = require("../models/User")
 const bcrypt = require("bcrypt")
 const fs = require("node:fs")
 const path = require("path")
+const jwt = require("jsonwebtoken")
+const { use } = require("../routes/user")
 
 const register = async (req = request, res = response) => {
     const {name, lastname, email, password} = req.body
@@ -52,9 +54,7 @@ const avatar = async (req = request, res = response, next) => {
 }
 
 const getAvatar = async (req = request, res = response) => {
-    const {email} = req.query
-
-    const user = await User.findOne({email})
+    const user = req.user
 
     if(!user) {
         res.status(400).send("Recurso no encontrado");
@@ -65,8 +65,19 @@ const getAvatar = async (req = request, res = response) => {
     let buff = fs.readFileSync(path.normalize(avatar.image))
     
     res.status(200).send(buff)
-}   
+}
+
+const getUserAuth = async (req = request, res = response) => {
+    const {name, lastname, avatar, description} = req.user
+
+    let buff = fs.readFileSync(path.normalize(avatar.image))
+    console.log(buff)
+
+    const user = {name, lastname, buff: buff.toString(), image: avatar.contentType, description}
+
+    res.status(200).json(user)
+}
 
 module.exports = {
-    register, avatar, getAvatar
+    register, avatar, getAvatar, getUserAuth
 }

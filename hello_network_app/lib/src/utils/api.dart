@@ -1,5 +1,11 @@
+import 'package:hello_network_app/src/models/user_model.dart';
+import 'package:hello_network_app/src/utils/preferences.dart';
 import "package:http/http.dart" as http;
 import 'dart:convert' as convert;
+
+import 'package:provider/provider.dart';
+
+final _p = Preferences();
 
 class ApiServices {
   Future<Map<String, dynamic>> addNewUser(
@@ -35,6 +41,22 @@ class ApiServices {
       return convert.jsonDecode(response.body);
     } else {
       throw Exception("Error al realizar petición.");
+    }
+  }
+
+  Future<void> getAvatar() async {
+    var url = Uri.parse("http://10.0.2.2:8000/api/users/get_avatar");
+    await http.get(url, headers: <String, String>{"auth-token": _p.tokenAuth});
+  }
+
+  Future<void> getUserAuth(context) async {
+    var url = Uri.parse("http://10.0.2.2:8000/api/users/user_auth");
+    final response = await http
+        .get(url, headers: <String, String>{"auth-token": _p.tokenAuth});
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = convert.jsonDecode(response.body);
+      Provider.of<UserModel>(context, listen: false).setAuthUser(data);
     }
   }
 }

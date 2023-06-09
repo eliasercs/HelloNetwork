@@ -6,6 +6,7 @@ import "package:hello_network_app/src/widgets/form.dart";
 import "package:fluttericon/font_awesome5_icons.dart";
 import "package:provider/provider.dart";
 
+import "../models/user_model.dart";
 import "../utils/api.dart";
 import "../utils/preferences.dart";
 
@@ -266,6 +267,7 @@ class _LogInState extends State<LogIn> {
                             final token = data["token"];
                             final pref = Preferences();
                             pref.setTokenAuth(token);
+                            await ApiServices().getUserAuth(context);
                             // ignore: use_build_context_synchronously
                             Navigator.pushReplacementNamed(
                                 context, "/dashboard");

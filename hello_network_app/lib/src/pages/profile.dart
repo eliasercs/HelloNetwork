@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:hello_network_app/src/utils/api.dart";
 import "package:hello_network_app/src/widgets/button.dart";
 import "package:hello_network_app/src/widgets/navbar.dart";
 import "package:hello_network_app/src/widgets/profile.dart";
@@ -28,11 +29,11 @@ class _navCard extends StatelessWidget {
 }
 
 class navBarProfile extends StatelessWidget {
-  final String id;
-
-  navBarProfile(this.id);
+  final String image;
+  navBarProfile({required this.image});
 
   void settings() {
+    //ApiServices().getAvatar();
     print("Settings");
   }
 
@@ -49,7 +50,8 @@ class navBarProfile extends StatelessWidget {
               bottomLeft: Radius.circular(75),
               bottomRight: Radius.circular(35))),
       child: Row(children: [
-        ProfileAvatar(150, 150, "graphics/profile/avatar_user.jpg", () {}),
+        ProfileAvatarBase64(
+            width: 150, height: 150, image: image, callback: () {}),
         const SizedBox(
           width: 15,
         ),
@@ -68,7 +70,7 @@ class navBarProfile extends StatelessWidget {
             const SizedBox(
               height: 5,
             ),
-            id != "1"
+            "2" != "1"
                 ? Button(
                     "Seguir",
                     const Color(0xfffca311),
@@ -231,9 +233,8 @@ class followsNumbers extends StatelessWidget {
 }
 
 class profilePage extends StatelessWidget {
-  final String id;
-
-  profilePage(this.id);
+  final String image;
+  profilePage({required this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +243,9 @@ class profilePage extends StatelessWidget {
           child: Column(
         children: [
           navbarRoute("Perfil de Usuario"),
-          navBarProfile(id),
+          navBarProfile(
+            image: image,
+          ),
           Expanded(child: profileBody())
         ],
       )),
