@@ -32,7 +32,10 @@ class _DashboardState extends State<Dashboard> {
         child: Column(children: [
           navbarDashboard(user["name"], user["lastname"], user["buff"]),
           const Tabs(),
-          const inputPost(),
+          const inputPost(
+            placeholder: "¿Qué estás pensando?",
+            padding: 20,
+          ),
           const Expanded(child: Posts())
         ]),
       ),

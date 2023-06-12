@@ -51,7 +51,12 @@ class navBarProfile extends StatelessWidget {
               bottomRight: Radius.circular(35))),
       child: Row(children: [
         ProfileAvatarBase64(
-            width: 150, height: 150, image: image, callback: () {}),
+            width: 150,
+            height: 150,
+            image: image,
+            callback: () {
+              Navigator.pushNamed(context, "/chat");
+            }),
         const SizedBox(
           width: 15,
         ),

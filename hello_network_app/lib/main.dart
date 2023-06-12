@@ -1,30 +1,53 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:hello_network_app/src/models/form_model.dart';
 import 'package:hello_network_app/src/models/project_model.dart';
 import 'package:hello_network_app/src/models/tablero_model.dart';
 import 'package:hello_network_app/src/models/user_model.dart';
+import 'package:hello_network_app/src/pages/chat.dart';
 import 'package:hello_network_app/src/pages/dashboard.dart';
-import 'package:hello_network_app/src/pages/index.dart';
 import 'package:hello_network_app/src/pages/kanban.dart';
 import 'package:hello_network_app/src/pages/profile.dart';
 import 'package:hello_network_app/src/pages/project.dart';
 import 'package:hello_network_app/src/pages/sign_up.dart';
-import 'package:hello_network_app/src/pages/slideshow.dart';
 
 import "package:flutter/services.dart";
-import 'package:hello_network_app/src/utils/api.dart';
 import 'package:hello_network_app/src/utils/handle_routes.dart';
 import 'package:hello_network_app/src/utils/preferences.dart';
-import 'package:hello_network_app/src/widgets/dialog.dart';
+import 'package:hello_network_app/src/utils/sockets.dart';
 import 'package:provider/provider.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 Preferences _p = Preferences();
+
+StreamSocket streamSocket = StreamSocket();
+Socket socket = io('http://10.0.2.2:8000',
+    OptionBuilder().setTransports(['websocket']).build());
+
+void connectAndListen() {
+  socket.onConnect((_) {
+    socket.on("send-message", (data) {
+      //print(data);
+      streamSocket.addResponse(data);
+    });
+
+    /*
+    socket.emit("send-message", {
+      "name": "Eliaser",
+      "lastname": "Concha",
+      "message": "Hola mundo desde flutter"
+    });
+    */
+  });
+
+  //When an event recieved from server, data is added to the stream
+  //socket.on('event', (data) => streamSocket.addResponse);
+  socket.onDisconnect((_) => print('disconnect'));
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _p.initPrefs();
+  connectAndListen();
   runApp(const MainApp());
 }
 
@@ -101,7 +124,8 @@ class _MyAppState extends State<_MyApp> {
         "/select_sprint": (context) => const SprintView(),
         "/signup": (context) => SignUp(),
         "/signin": (context) => LogIn(),
-        "/splash": (context) => Loading()
+        "/splash": (context) => Loading(),
+        "/chat": (context) => UserChat()
       },
     );
   }

@@ -6,7 +6,8 @@ import "package:provider/provider.dart";
 import "../utils/validate.dart";
 
 class inputText extends StatelessWidget {
-  inputText();
+  final String placeholder;
+  inputText({required this.placeholder});
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +22,18 @@ class inputText extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Color(0xff273469)),
               borderRadius: BorderRadius.all(Radius.circular(50.0))),
-          hintText: "¿Qué estás pensando?",
+          hintText: "",
           hintStyle: TextStyle(color: Colors.white)),
     );
   }
 }
 
 class inputPost extends StatelessWidget {
-  const inputPost({super.key});
+  final String placeholder;
+  final double padding;
+
+  const inputPost(
+      {super.key, required this.placeholder, required this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +43,14 @@ class inputPost extends StatelessWidget {
       width: size.width,
       height: 80,
       //color: const Color(0xffe5e5e5),
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: padding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Flexible(child: inputText()),
+          Flexible(
+              child: inputText(
+            placeholder: placeholder,
+          )),
           TextButton(
               style: TextButton.styleFrom(
                   backgroundColor: Color(0xff273469),

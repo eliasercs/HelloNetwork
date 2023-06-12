@@ -12,6 +12,13 @@ class Server {
         this.connect_db()
         this.midlewares()
         this.routes()
+
+        this.server = require("http").createServer(this.app)
+
+        this.io = require("socket.io")(this.server)
+
+        // Sockets
+        this.sockets()
     }
 
     async connect_db() {
@@ -21,6 +28,7 @@ class Server {
     midlewares () {
         this.app.use(cors())
         this.app.use(express.json())
+        this.app.use( express.static("src/public") )
     }
 
     routes() {
@@ -28,8 +36,24 @@ class Server {
         this.app.use("/api/auth", require("../routes/auth"))
     }
 
+    sockets() {
+        this.io.on("connection", client => {
+            console.log("Cliente conectado ", client.id)
+            //client.on("event", data => {})
+            
+            client.on("send-message", (payload) => {
+                console.log(payload)
+                this.io.emit("send-message", payload)
+            })
+
+            client.on("disconnect", () => {
+                console.log("Cliente desconectado ", client.id)
+            })
+        })
+    }
+
     listen() {
-        this.app.listen(this.port, () => {
+        this.server.listen(this.port, () => {
             console.log(`Aplicación ejecutando en el puerto ${this.port}`)
         })
     }
