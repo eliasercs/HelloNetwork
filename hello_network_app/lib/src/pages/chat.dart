@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hello_network_app/main.dart';
 import 'package:hello_network_app/src/models/form_model.dart';
+import 'package:hello_network_app/src/utils/api.dart';
+import 'package:hello_network_app/src/utils/preferences.dart';
 import 'package:hello_network_app/src/widgets/button.dart';
 import 'package:hello_network_app/src/widgets/dialog.dart';
 import 'package:hello_network_app/src/widgets/form.dart';
@@ -15,9 +17,13 @@ import 'package:socket_io_client/socket_io_client.dart';
 import '../models/user_model.dart';
 import '../widgets/navbar.dart';
 
+Preferences _p = Preferences();
+
 class InputChat extends StatefulWidget {
   final String placeholder;
-  const InputChat({super.key, required this.placeholder});
+  final String user_id;
+  const InputChat(
+      {super.key, required this.placeholder, required this.user_id});
 
   @override
   State<InputChat> createState() => _InputChatState();
@@ -26,7 +32,10 @@ class InputChat extends StatefulWidget {
 class _InputChatState extends State<InputChat> {
   TextEditingController controller = TextEditingController();
   Color prefColor = Colors.white;
-  Socket socket = io("http://10.0.2.2:8000");
+  Socket socket = io(
+      "http://10.0.2.2:8000",
+      OptionBuilder().setTransports(['websocket']).setExtraHeaders(
+          {"auth-token": _p.tokenAuth}).build());
 
   @override
   void initState() {
@@ -43,9 +52,10 @@ class _InputChatState extends State<InputChat> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserModel>(context, listen: true).authUser;
     socket.onConnect((_) {
       print("connect");
-      socket.emit('send-message', "Hola Mundo desde flutter");
+      //socket.emit('send-message', "Hola Mundo desde flutter");
     });
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -69,9 +79,9 @@ class _InputChatState extends State<InputChat> {
             IconBtn(
                 Colors.white.withOpacity(0.25), Color(0xffFFC700), Icons.send,
                 () {
-              socket.emit("send-message", {
-                "name": "Eliaser",
-                "lastname": "Concha",
+              socket.emit("private-message", {
+                "uid": widget.user_id,
+                "from": user["name"],
                 "message": controller.text
               });
               //print(controller.text);
@@ -82,12 +92,18 @@ class _InputChatState extends State<InputChat> {
 }
 
 class UserChat extends StatelessWidget {
-  const UserChat({super.key});
+  final String user_id;
+  const UserChat({super.key, required this.user_id});
 
   @override
   Widget build(BuildContext context) {
+    Socket socket = io(
+        "http://10.0.2.2:8000",
+        OptionBuilder().setTransports(['websocket']).setExtraHeaders(
+            {"auth-token": _p.tokenAuth}).build());
     final size = MediaQuery.of(context).size;
     final user = Provider.of<UserModel>(context, listen: true).authUser;
+    socket.emit("rescue-messages", user_id);
     return SafeArea(
         child: Scaffold(
       body: Container(
@@ -99,26 +115,28 @@ class UserChat extends StatelessWidget {
             height: size.height,
             color: Color(0xff1E2749),
             child: StreamBuilder(
-                stream: streamSocket.getChats,
+                stream: streamSocket.getResponse,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final data = snapshot.data;
                     return ListView.builder(
                         itemCount: data!.length,
                         itemBuilder: ((context, index) =>
-                            data[index]["name"] == user["name"]
+                            data[index]["author"] == user["id"]
                                 ? ChatTextLeft(
-                                    text: data[index]["message"],
+                                    text: data[index]["content"],
                                     avatar: user["buff"])
                                 : ChatTextRight(
-                                    text: data[index]["message"],
-                                    avatar: user["buff"])));
+                                    text: data[index]["content"],
+                                    avatar: data[index]["buff"])));
                   } else {
                     return Text("");
                   }
                 }),
           )),
-          _ChatForm()
+          _ChatForm(
+            user_id: user_id,
+          )
         ]),
       ),
     ));
@@ -126,9 +144,8 @@ class UserChat extends StatelessWidget {
 }
 
 class _ChatForm extends StatefulWidget {
-  const _ChatForm({
-    super.key,
-  });
+  final String user_id;
+  const _ChatForm({super.key, required this.user_id});
 
   @override
   State<_ChatForm> createState() => _ChatFormState();
@@ -140,7 +157,10 @@ class _ChatFormState extends State<_ChatForm> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       color: Color(0xff1E2749),
-      child: InputChat(placeholder: "Escribe tu mensaje ..."),
+      child: InputChat(
+        placeholder: "Escribe tu mensaje ...",
+        user_id: widget.user_id,
+      ),
     );
   }
 }
@@ -197,6 +217,111 @@ class ChatTextLeft extends StatelessWidget {
         ProfileAvatarBase64(
             width: 50, height: 50, image: avatar, callback: () {}),
       ],
+    );
+  }
+}
+
+class SelectUser extends StatefulWidget {
+  const SelectUser({super.key});
+
+  @override
+  State<SelectUser> createState() => _SelectUserState();
+}
+
+class _SelectUserState extends State<SelectUser> {
+  Socket socket = io(
+      "http://10.0.2.2:8000",
+      OptionBuilder().setTransports(['websocket']).setExtraHeaders(
+          {"auth-token": _p.tokenAuth}).build());
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    socket.emit("active", "Hola Mundo desde Flutter");
+
+    return SafeArea(
+        child: Scaffold(
+      body: Container(
+        width: size.width,
+        height: size.height,
+        child: Column(
+          children: [
+            navbarRoute("Buscar usuario"),
+            Expanded(
+                child: Container(
+              width: size.width,
+              height: size.height,
+              child: StreamBuilder<dynamic>(
+                stream: streamSocket.getActiveUsers,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    var count = 0;
+                    for (var element in snapshot.data) {
+                      count += 1;
+                    }
+                    return ListView.builder(
+                        itemCount: count,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (context, index) {
+                          return _UserOption(
+                            avatar: snapshot.data[index]["avatar"],
+                            name: snapshot.data[index]["name"],
+                            lastname: snapshot.data[index]["lastname"],
+                            user_id: snapshot.data[index]["id"],
+                          );
+                        });
+                  }
+                },
+              ),
+            ))
+          ],
+        ),
+      ),
+    ));
+  }
+}
+
+class _UserOption extends StatelessWidget {
+  const _UserOption(
+      {super.key,
+      required this.avatar,
+      required this.name,
+      required this.lastname,
+      required this.user_id});
+
+  final String avatar;
+  final String name;
+  final String lastname;
+  final String user_id;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.push(context,
+          MaterialPageRoute(builder: (context) => UserChat(user_id: user_id))),
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Row(children: [
+          ProfileAvatarBase64(
+              width: 50, height: 50, image: avatar, callback: () {}),
+          SizedBox(
+            width: 10,
+          ),
+          Text(
+            "$name $lastname",
+            style: TextStyle(fontFamily: "Poppins", fontSize: 15),
+          )
+        ]),
+      ),
     );
   }
 }

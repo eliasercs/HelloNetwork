@@ -1,6 +1,7 @@
 const express = require("express")
 const connect = require("../database/config")
 const cors = require("cors")
+const { socketController } = require("../sockets/controllers")
 require("dotenv").config()
 
 class Server {
@@ -37,19 +38,7 @@ class Server {
     }
 
     sockets() {
-        this.io.on("connection", client => {
-            console.log("Cliente conectado ", client.id)
-            //client.on("event", data => {})
-            
-            client.on("send-message", (payload) => {
-                console.log(payload)
-                this.io.emit("send-message", payload)
-            })
-
-            client.on("disconnect", () => {
-                console.log("Cliente desconectado ", client.id)
-            })
-        })
+        this.io.on("connection", (socket) => socketController(socket, this.io))
     }
 
     listen() {

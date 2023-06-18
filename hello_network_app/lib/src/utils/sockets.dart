@@ -1,21 +1,29 @@
 import 'dart:async';
 
 class StreamSocket {
-  final _socketResponse = StreamController<Map<String, dynamic>>.broadcast();
+  final _activeUsers = StreamController<dynamic>.broadcast();
+  final _socketResponse = StreamController<dynamic>.broadcast();
   final _chatStream = StreamController<List<Map<String, dynamic>>>.broadcast();
   final List<Map<String, dynamic>> _chats = [];
 
-  void addResponse(Map<String, dynamic> data) {
-    print(data);
-    _chats.add(data);
-    _chatStream.sink.add(_chats);
+  void addResponse(dynamic data) {
+    //_chats.add(data);
+    //_chatStream.sink.add(_chats);
     _socketResponse.sink.add(data);
   }
 
-  Stream<Map<String, dynamic>> get getResponse => _socketResponse.stream;
+  void updateActiveUsers(data) {
+    _activeUsers.sink.add(data["data"]);
+    //print(_activeUsers.stream.toList());
+  }
+
+  Stream<dynamic> get getActiveUsers => _activeUsers.stream;
+
+  Stream<dynamic> get getResponse => _socketResponse.stream;
   Stream<List<Map<String, dynamic>>> get getChats => _chatStream.stream;
 
   void dispose() {
+    _activeUsers.close();
     _socketResponse.close();
     _chatStream.close();
   }

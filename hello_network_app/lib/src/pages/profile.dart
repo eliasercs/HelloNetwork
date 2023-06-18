@@ -55,7 +55,7 @@ class navBarProfile extends StatelessWidget {
             height: 150,
             image: image,
             callback: () {
-              Navigator.pushNamed(context, "/chat");
+              Navigator.pushNamed(context, "/chat_user");
             }),
         const SizedBox(
           width: 15,

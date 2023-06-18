@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hello_network_app/src/models/form_model.dart';
 import 'package:hello_network_app/src/models/project_model.dart';
@@ -20,28 +22,25 @@ import 'package:socket_io_client/socket_io_client.dart';
 Preferences _p = Preferences();
 
 StreamSocket streamSocket = StreamSocket();
-Socket socket = io('http://10.0.2.2:8000',
-    OptionBuilder().setTransports(['websocket']).build());
+Socket socket = io(
+    'http://10.0.2.2:8000',
+    OptionBuilder().setTransports(['websocket']).setExtraHeaders(
+        {"auth-token": _p.tokenAuth}).build());
 
 void connectAndListen() {
   socket.onConnect((_) {
-    socket.on("send-message", (data) {
-      //print(data);
+    socket.on("get-messages", (data) {
       streamSocket.addResponse(data);
     });
 
-    /*
-    socket.emit("send-message", {
-      "name": "Eliaser",
-      "lastname": "Concha",
-      "message": "Hola mundo desde flutter"
+    socket.on("active-users", (data) {
+      streamSocket.updateActiveUsers(data);
     });
-    */
   });
 
   //When an event recieved from server, data is added to the stream
   //socket.on('event', (data) => streamSocket.addResponse);
-  socket.onDisconnect((_) => print('disconnect'));
+  //socket.onDisconnect((_) => print('disconnect'));
 }
 
 void main() async {
@@ -125,7 +124,10 @@ class _MyAppState extends State<_MyApp> {
         "/signup": (context) => SignUp(),
         "/signin": (context) => LogIn(),
         "/splash": (context) => Loading(),
-        "/chat": (context) => UserChat()
+        "/chat": (context) => UserChat(
+              user_id: "",
+            ),
+        "/chat_user": (context) => SelectUser()
       },
     );
   }

@@ -62,4 +62,18 @@ class ApiServices {
       throw Exception("Error");
     }
   }
+
+  Future<Map<String, dynamic>> getAllUsers() async {
+    var url = Uri.parse("http://10.0.2.2:8000/api/users/all_users");
+    final response = await http.get(url, headers: <String, String>{
+      "Content-Type": "application/json",
+      "auth-token": _p.tokenAuth
+    });
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = convert.jsonDecode(response.body);
+      return data;
+    } else {
+      throw Exception("Error");
+    }
+  }
 }

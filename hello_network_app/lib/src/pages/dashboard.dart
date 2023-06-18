@@ -25,8 +25,6 @@ class _DashboardState extends State<Dashboard> {
     }
     */
 
-    print(user);
-
     return Scaffold(
       body: SafeArea(
         child: Column(children: [

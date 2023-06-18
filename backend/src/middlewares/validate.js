@@ -37,8 +37,24 @@ const validateJWT = async (req = request, res = response, next) => {
     }
 }
 
+const checkSockets = async (token = "") => {
+    try {
+        const {uid} = jwt.verify(token, process.env.SECRET_KEY)
+        const user = await User.findById(uid)
+
+        if (user) {
+            return user
+        } else {
+            return null
+        }
+    } catch (error) {
+        return null
+    }
+}
+
 module.exports = {
     generateJWT,
     validateFields,
-    validateJWT
+    validateJWT,
+    checkSockets
 }

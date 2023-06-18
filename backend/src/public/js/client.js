@@ -1,46 +1,96 @@
-const socket = io()
+const userHTML = document.getElementById("user")
+const messageInput = document.getElementById("messageInput")
+const sendMessage = document.getElementById("sendMessage")
+const messageContainer = document.getElementById("messageContainer")
+const users_active = document.getElementById("users-active")
+
+let id_user = "648cc2f2dd3f778c3aebc982"
 
 const user = {
     name: "Soporte",
     lastname: "Hello Network",
     email: "soporte@hellonetwork.com",
-    password: "12345678"
+    password: "Crack1352021#"
 }
 
-document.getElementById("user").innerText = `${user.name} ${user.lastname}`
+const connectSocket = async (token) => {
+    const socket = io({
+        'extraHeaders': {
+            'auth-token' : token
+        }
+    })
 
-const sendMessage = document.getElementById("sendMessage")
-const messageContainer = document.getElementById("messageContainer")
+    socket.emit("rescue-messages", id_user)
 
-sendMessage.addEventListener("click", () => {
-    const messageInput = document.getElementById("messageInput")
-    const value = messageInput.value
+    socket.on("get-messages", (payload) => {
+        console.log(payload)
 
-    const payload = {
-        message: value,
-        name: user.name,
-        lastname: user.lastname,
-        email: user.email
-    }
+        payload.forEach(({content}) => {
+            let dom_element = document.createElement("div")
+            dom_element.setAttribute("class", `alert alert-info`)
+            dom_element.innerText = `${content}`
+            messageContainer.appendChild(dom_element)
+        });
+    })
 
-    socket.emit("send-message", payload)
-})
+    socket.on("active-users", (payload) => {
+        const active = payload["data"]
+        console.log(active)
+        active.forEach(({id, name, lastname}) => {
+            let dom_element = document.createElement("div")
+            dom_element.setAttribute("id", id)
+            let alert = name !== user["name"] && lastname !== user["lastname"] ? "alert-success" : "alert-warning"
+            dom_element.setAttribute("class", `alert ${alert}`)
+            dom_element.innerText = `${name} ${lastname}`
+            users_active.appendChild(dom_element)
+        });
 
-socket.on("connect", () => {
-    alert("Conectado")
-})
+        const alert_success = document.querySelectorAll(".alert-success")
+        
+        alert_success.forEach((element) => {
+            element.addEventListener("click", (e) => {
+                id_user = e.target.id
+            })
+        })
+    })
+    socket.on("private-message", (payload) => {
+        console.log(payload)
+        let alert = payload["from"] !== user["name"] ? "alert-success" : "alert-warning"
+        let element = document.createElement("div")
+        element.setAttribute("class", `alert ${alert}`)
+        element.innerText = `[${payload["from"]}]: ${payload["message"]}`
+        messageContainer.appendChild(element)
+    })
 
-socket.on("disconnect", () => {
-    alert("Desconectado")
-})
+    sendMessage.addEventListener("click", () => {
+        message = messageInput.value
+        socket.emit("private-message", {
+            uid: id_user, 
+            from: user["name"],
+            message
+        })
+    })
+}
 
-socket.on("send-message", (payload) => {
-    const {message, name, lastname, email} = payload
+const login = async () => {
+    const response = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: user.email,
+            password: user.password
+        })
+    })
 
-    const msg = document.createElement("div")
-    msg.setAttribute("class", `alert ${email != user.email ? "alert-danger" : "alert-success"}`)
-    msg.innerText = `Author: ${name} ${lastname} \n
-        Message: ${message}`
+    const data = await response.json()
 
-    messageContainer.appendChild(msg)
-})
+    localStorage.setItem("auth-token", data["token"])
+
+    await connectSocket(localStorage.getItem("auth-token"))
+
+    userHTML.innerText = `${user["name"]} ${user["lastname"]}`
+}
+
+login()

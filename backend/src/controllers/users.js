@@ -68,16 +68,34 @@ const getAvatar = async (req = request, res = response) => {
 }
 
 const getUserAuth = async (req = request, res = response) => {
-    const {name, lastname, avatar, description} = req.user
+    const {name, lastname, avatar, description, id} = req.user
 
     let buff = fs.readFileSync(path.normalize(avatar.image))
-    console.log(buff)
 
-    const user = {name, lastname, buff: buff.toString(), image: avatar.contentType, description}
+    const user = {id, name, lastname, buff: buff.toString(), image: avatar.contentType, description}
 
     res.status(200).json(user)
 }
 
+const getAllUsers = async (req = request, res = response) => {
+    const auth = req.user
+    const users = await User.find({})
+
+    const usersFilter = users.filter(value => value.email !== auth.email)
+    const data = usersFilter.map((value) => {
+        let buff = fs.readFileSync(path.normalize(value.avatar.image))
+        let user = {
+            name: value.name,
+            lastname: value.lastname,
+            email: value.email,
+            avatar: buff.toString()
+        }
+        return user
+    })
+
+    res.status(200).json({"data" : data})
+}
+
 module.exports = {
-    register, avatar, getAvatar, getUserAuth
+    register, avatar, getAvatar, getUserAuth, getAllUsers
 }
