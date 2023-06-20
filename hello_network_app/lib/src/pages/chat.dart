@@ -84,6 +84,7 @@ class _InputChatState extends State<InputChat> {
                 "from": user["name"],
                 "message": controller.text
               });
+              socket.emit("rescue-messages", widget.user_id);
               //print(controller.text);
             })
           ],
@@ -125,7 +126,7 @@ class UserChat extends StatelessWidget {
                             data[index]["author"] == user["id"]
                                 ? ChatTextLeft(
                                     text: data[index]["content"],
-                                    avatar: user["buff"])
+                                    avatar: data[index]["buff"])
                                 : ChatTextRight(
                                     text: data[index]["content"],
                                     avatar: data[index]["buff"])));
@@ -251,7 +252,7 @@ class _SelectUserState extends State<SelectUser> {
         height: size.height,
         child: Column(
           children: [
-            navbarRoute("Buscar usuario"),
+            navbarRoute("Usuarios Activos"),
             Expanded(
                 child: Container(
               width: size.width,
