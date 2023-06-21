@@ -1,10 +1,8 @@
 const {request, response} = require("express")
-const User = require("../models/User")
+const {UserModel : User} = require("../models/User")
 const bcrypt = require("bcrypt")
 const fs = require("node:fs")
 const path = require("path")
-const jwt = require("jsonwebtoken")
-const { use } = require("../routes/user")
 
 const register = async (req = request, res = response) => {
     const {name, lastname, email, password} = req.body

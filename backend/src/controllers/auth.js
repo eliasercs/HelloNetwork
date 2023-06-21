@@ -1,7 +1,7 @@
 const {request, response} = require("express")
 const bcrypt = require("bcrypt")
 const {generateJWT} = require("../middlewares/validate")
-const User = require("../models/User")
+const {UserModel : User} = require("../models/User")
 
 const SignIn = async (req = request, res = response) => {
     const {email, password} = req.body

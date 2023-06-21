@@ -1,4 +1,9 @@
 import "package:flutter/material.dart";
+import "package:hello_network_app/src/pages/kanban.dart";
+import "package:provider/provider.dart";
+
+import "../models/task_model.dart";
+import "../utils/api.dart";
 
 class _TabButton extends StatelessWidget {
   final String text;
@@ -51,7 +56,13 @@ class Tabs extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         _TabButton("Tablero Personal", "graphics/bg/1.jpg", () {
-          Navigator.pushNamed(context, "/kanban");
+          ApiServices().getAllTasks().then((value) {
+            Provider.of<TaskModel>(context, listen: false).setTasks(value);
+          });
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Kanban("Tareas Individuales", false)));
         }),
         _TabButton("Tablero de Proyectos", "graphics/bg/2.jpg", () {
           Navigator.pushNamed(context, "/select_project");

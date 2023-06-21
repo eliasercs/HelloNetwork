@@ -1,8 +1,13 @@
 import "package:flutter/material.dart";
+import "package:hello_network_app/src/models/task_model.dart";
+import "package:hello_network_app/src/utils/api.dart";
 import "package:hello_network_app/src/widgets/navbar.dart";
+import "package:provider/provider.dart";
 
 class _Tasks extends StatefulWidget {
-  const _Tasks();
+  final List<dynamic> data;
+
+  _Tasks({required this.data});
 
   @override
   State<_Tasks> createState() => _TasksState();
@@ -25,8 +30,10 @@ class _TasksState extends State<_Tasks> {
             controller: controller,
             child: ListView.builder(
               controller: controller,
-              itemCount: 30,
-              itemBuilder: (context, index) => const _Task(),
+              itemCount: widget.data.length,
+              itemBuilder: (context, index) => _Task(
+                  title: widget.data[index]["title"],
+                  date: widget.data[index]["title"]),
             )),
       ),
     );
@@ -34,7 +41,10 @@ class _TasksState extends State<_Tasks> {
 }
 
 class _Task extends StatelessWidget {
-  const _Task();
+  final String title;
+  final String date;
+
+  const _Task({required this.title, required this.date});
 
   @override
   Widget build(BuildContext context) {
@@ -46,18 +56,18 @@ class _Task extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Resolver alguna tarea.",
+            Text(
+              title,
               style: TextStyle(fontFamily: "Poppins", fontSize: 18),
             ),
             Row(
-              children: const [
-                Icon(
+              children: [
+                const Icon(
                   Icons.timelapse,
                   size: 24,
                 ),
                 Text(
-                  "Fecha y hora",
+                  date,
                   style: TextStyle(fontFamily: "Poppins", fontSize: 12),
                 )
               ],
@@ -98,32 +108,49 @@ class _StatusRows extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tasks = Provider.of<TaskModel>(context, listen: true).tasks;
+
     return Row(children: [
       _StatusKanban(
         size: size,
         status: "Por hacer",
+        data: tasks["planificado"] ?? [],
       ),
       const SizedBox(
         width: 15,
       ),
-      _StatusKanban(size: size, status: "En proceso"),
+      _StatusKanban(
+        size: size,
+        status: "En proceso",
+        data: tasks["proceso"] ?? [],
+      ),
       const SizedBox(
         width: 15,
       ),
-      _StatusKanban(size: size, status: "Completado"),
+      _StatusKanban(
+        size: size,
+        status: "Completado",
+        data: tasks["completado"] ?? [],
+      ),
       const SizedBox(
         width: 15,
       ),
-      _StatusKanban(size: size, status: "Canceladas")
+      _StatusKanban(
+        size: size,
+        status: "Canceladas",
+        data: tasks["cancelado"] ?? [],
+      )
     ]);
   }
 }
 
 class _StatusKanban extends StatelessWidget {
-  const _StatusKanban({required this.size, required this.status});
+  const _StatusKanban(
+      {required this.size, required this.status, required this.data});
 
   final Size size;
   final String status;
+  final List<dynamic> data;
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +167,7 @@ class _StatusKanban extends StatelessWidget {
             style: const TextStyle(fontFamily: "Poppins", fontSize: 20),
           ),
         ),
-        const Expanded(child: _Tasks())
+        Expanded(child: _Tasks(data: data))
       ]),
     );
   }
@@ -148,15 +175,60 @@ class _StatusKanban extends StatelessWidget {
 
 class Kanban extends StatelessWidget {
   final String title;
+  final bool group;
 
-  const Kanban(this.title, {super.key});
+  Kanban(this.title, this.group, {super.key});
+
+  Map<String, dynamic> data = {};
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
           child: Column(
-        children: [navbarRoute(title), const Expanded(child: _KanbanModel())],
+        children: [
+          navbarRouteAction(
+              title: title,
+              icon: Icons.add_box,
+              action: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => _AddTask()));
+              }),
+          const Expanded(child: _KanbanModel())
+        ],
+      )),
+    );
+  }
+}
+
+class _AddTask extends StatelessWidget {
+  const _AddTask({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(body: navbarRoute("Agregar nueva tarea")),
+    );
+  }
+}
+
+class _TaskAddForm extends StatefulWidget {
+  const _TaskAddForm({super.key});
+
+  @override
+  State<_TaskAddForm> createState() => __TaskAddFormState();
+}
+
+class __TaskAddFormState extends State<_TaskAddForm> {
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Expanded(
+          child: Container(
+        width: size.width,
+        height: size.height,
       )),
     );
   }

@@ -1,7 +1,7 @@
 const {request, response} = require("express")
 const {validationResult} = require("express-validator")
 const jwt = require("jsonwebtoken")
-const User = require("../models/User")
+const {UserModel : User} = require("../models/User")
 
 const validateFields = (req = request, res = response, next) => {
     const error = validationResult(req)

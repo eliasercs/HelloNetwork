@@ -2,7 +2,7 @@ const Socket = require("socket.io");
 const { checkSockets } = require("../middlewares/validate");
 const ChatInfo = require("../models/ChatInfo");
 const Message = require("../models/Message");
-const User = require("../models/User");
+const {UserModel : User} = require("../models/User");
 
 const fs = require("node:fs");
 const path = require("node:path");

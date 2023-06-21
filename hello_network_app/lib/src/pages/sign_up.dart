@@ -33,8 +33,8 @@ class _BackgroundPainter extends CustomPainter {
   }
 }
 
-class _Background extends StatelessWidget {
-  const _Background({super.key});
+class Background extends StatelessWidget {
+  const Background({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +158,7 @@ class _SignUpState extends State<SignUp> {
       body: Stack(children: [
         Container(
           color: Colors.black12,
-          child: _Background(),
+          child: Background(),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -235,7 +235,7 @@ class _LogInState extends State<LogIn> {
       body: Stack(children: [
         Container(
           color: Colors.black12,
-          child: _Background(),
+          child: Background(),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,

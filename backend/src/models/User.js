@@ -14,4 +14,6 @@ avatar: {type: Object, default: {contentType: "image/jpeg", image: img_default}}
     description: {type: String, default: ""}
 })
 
-module.exports = model("User", UserSchema)
+const UserModel = model("User", UserSchema)
+
+module.exports = {UserModel, UserSchema}

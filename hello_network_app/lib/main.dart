@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hello_network_app/src/models/form_model.dart';
 import 'package:hello_network_app/src/models/project_model.dart';
 import 'package:hello_network_app/src/models/tablero_model.dart';
+import 'package:hello_network_app/src/models/task_model.dart';
 import 'package:hello_network_app/src/models/user_model.dart';
 import 'package:hello_network_app/src/pages/chat.dart';
 import 'package:hello_network_app/src/pages/dashboard.dart';
@@ -75,7 +76,8 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProjectSelected()),
         ChangeNotifierProvider(create: (_) => UserFormModel()),
         ChangeNotifierProvider(create: (_) => ErrorModel()),
-        ChangeNotifierProvider(create: (_) => UserModel())
+        ChangeNotifierProvider(create: (_) => UserModel()),
+        ChangeNotifierProvider(create: (_) => TaskModel())
       ],
       builder: (context, _) => _MyApp(),
     );
@@ -116,7 +118,7 @@ class _MyAppState extends State<_MyApp> {
           );
         },
         "/kanban": (context) {
-          return const Kanban("Tablero Personal");
+          return Kanban("Tablero Personal", false);
         },
         "/select_project": (context) => const SelectProject(),
         "/view_project": (context) => const ViewProject(),
@@ -124,9 +126,6 @@ class _MyAppState extends State<_MyApp> {
         "/signup": (context) => SignUp(),
         "/signin": (context) => LogIn(),
         "/splash": (context) => Loading(),
-        "/chat": (context) => UserChat(
-              user_id: "",
-            ),
         "/chat_user": (context) => SelectUser()
       },
     );

@@ -76,4 +76,31 @@ class ApiServices {
       throw Exception("Error");
     }
   }
+
+  Future<dynamic> addNewTask(Map<String, dynamic> data) async {
+    var url = Uri.parse("http://10.0.2.2:8000/api/tasks/add");
+    final response = await http.post(url,
+        headers: <String, String>{
+          "Content-Type": "application/json",
+          "auth-token": _p.tokenAuth
+        },
+        body: convert.jsonEncode(data));
+    if (response.statusCode == 200) {
+      return convert.jsonDecode(response.body);
+    } else {
+      throw Exception("Ocurrió un error al agregar una nueva tarea");
+    }
+  }
+
+  Future<dynamic> getAllTasks() async {
+    var url = Uri.parse("http://10.0.2.2:8000/api/tasks/personal");
+    final response = await http.get(url, headers: <String, String>{
+      "Content-Type": "application/json",
+      "auth-token": _p.tokenAuth
+    });
+    if (response.statusCode == 200) {
+      return convert.jsonDecode(response.body);
+    }
+    return {};
+  }
 }
