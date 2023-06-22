@@ -4,7 +4,9 @@ const Task = require("../models/Task")
 const addNewTask = async (req = request, res = response) => {
     const user = req.user
 
-    const {title, description, status, sprint_id, users} = req.body
+    const {title, description, status, date, sprint_id, users} = req.body
+
+    let date_task = date
     let sprint = sprint_id
     let users_data = users
 
@@ -15,7 +17,7 @@ const addNewTask = async (req = request, res = response) => {
         users_data = undefined
     }
 
-    const addTask = await new Task({title, author: user, description, status, sprint_id: sprint, users: users_data, date: Date.now()})
+    const addTask = await new Task({title, author: user, description, status, sprint_id: sprint, users: users_data, date: date_task})
     await addTask.save()
 
     res.status(200).json({msg: "Tarea creada satisfactoriamente."})

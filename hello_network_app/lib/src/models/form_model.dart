@@ -14,6 +14,15 @@ Map<String, dynamic> _defaultLogInError() {
   return {"email": <String>[], "password": <String>[]};
 }
 
+Map<String, dynamic> _defaultAddTaskError() {
+  return {
+    "titleTask": <String>[],
+    "dateTask": <String>[],
+    "descriptionTask": <String>[],
+    "statusTask": <String>[]
+  };
+}
+
 class UserFormModel extends ChangeNotifier {
   Map<String, dynamic> _user = {};
 
@@ -60,9 +69,16 @@ class ErrorModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteError() {
+    _error = {};
+    notifyListeners();
+  }
+
   void setError() {
     if (_stateErrorForm == "signup") {
       _error = _defaultSignUpError();
+    } else if (_stateErrorForm == "addTask") {
+      _error = _defaultAddTaskError();
     } else {
       _error = _defaultLogInError();
     }

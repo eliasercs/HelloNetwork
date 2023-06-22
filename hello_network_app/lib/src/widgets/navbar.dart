@@ -1,6 +1,8 @@
 import "package:flutter/material.dart";
+import "package:hello_network_app/src/models/form_model.dart";
 import "package:hello_network_app/src/widgets/button.dart";
 import "package:hello_network_app/src/widgets/profile.dart";
+import "package:provider/provider.dart";
 
 class navbarDashboard extends StatelessWidget {
   final String name;
@@ -68,6 +70,7 @@ class navbarRoute extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconBtn(Color(0xff273469), Color(0xfffca311), Icons.arrow_back, () {
+            Provider.of<ErrorModel>(context, listen: false).setError();
             Navigator.pop(context, true);
           }),
           Text(

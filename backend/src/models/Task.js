@@ -4,7 +4,7 @@ const {UserSchema} = require("./User")
 const TaskSchema = Schema({
     title: {type: String, required: [true]},
     author: {type: UserSchema, required: [true]},
-    date: {type: Date},
+    date: {type: String},
     description: {type: String, required: [true]},
     status: {type: String, required: [true]},
     sprint_id: {type: String, default: undefined},

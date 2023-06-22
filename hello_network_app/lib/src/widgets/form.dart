@@ -92,7 +92,7 @@ class InputWithIcon extends StatefulWidget {
 class _InputWithIconState extends State<InputWithIcon> {
   TextEditingController controller = TextEditingController();
   Color prefColor = Colors.white;
-  late List error;
+  late List error = [];
 
   @override
   void initState() {

@@ -1,6 +1,11 @@
 import "package:flutter/material.dart";
+import "package:hello_network_app/src/models/form_model.dart";
 import "package:hello_network_app/src/models/task_model.dart";
 import "package:hello_network_app/src/utils/api.dart";
+import "package:hello_network_app/src/utils/validate.dart";
+import "package:hello_network_app/src/widgets/button.dart";
+import "package:hello_network_app/src/widgets/dialog.dart";
+import "package:hello_network_app/src/widgets/form.dart";
 import "package:hello_network_app/src/widgets/navbar.dart";
 import "package:provider/provider.dart";
 
@@ -29,12 +34,20 @@ class _TasksState extends State<_Tasks> {
             thumbVisibility: true,
             controller: controller,
             child: ListView.builder(
-              controller: controller,
-              itemCount: widget.data.length,
-              itemBuilder: (context, index) => _Task(
-                  title: widget.data[index]["title"],
-                  date: widget.data[index]["title"]),
-            )),
+                controller: controller,
+                itemCount: widget.data.length,
+                itemBuilder: (context, index) {
+                  final date = DateTime.parse(widget.data[index]["date"]);
+                  final day = date.day;
+                  final month = date.month;
+                  final year = date.year;
+                  final hour = date.hour;
+                  final minute = date.minute;
+
+                  return _Task(
+                      title: widget.data[index]["title"],
+                      date: "$day/$month/$year - $hour:$minute");
+                })),
       ),
     );
   }
@@ -191,6 +204,9 @@ class Kanban extends StatelessWidget {
               title: title,
               icon: Icons.add_box,
               action: () {
+                Provider.of<ErrorModel>(context, listen: false)
+                    .setStateErrorForm("addTask");
+                Provider.of<ErrorModel>(context, listen: false).setError();
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => _AddTask()));
               }),
@@ -206,8 +222,17 @@ class _AddTask extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final error = Provider.of<ErrorModel>(context).error;
+    final size = MediaQuery.of(context).size;
+    print(error);
     return SafeArea(
-      child: Scaffold(body: navbarRoute("Agregar nueva tarea")),
+      child: Scaffold(
+          body: Column(
+        children: [
+          navbarRoute("Agregar nueva tarea"),
+          Flexible(child: _TaskAddForm())
+        ],
+      )),
     );
   }
 }
@@ -220,16 +245,176 @@ class _TaskAddForm extends StatefulWidget {
 }
 
 class __TaskAddFormState extends State<_TaskAddForm> {
+  final _formKey = GlobalKey<FormState>();
+  DateTime? dateStr;
+  TimeOfDay? timeStr;
+  String? dropdown_value = "Por hacer";
+  var status = ["Por hacer", "En proceso", "Completado", "Cancelado"];
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Expanded(
-          child: Container(
-        width: size.width,
-        height: size.height,
-      )),
+
+    return Container(
+      width: size.width,
+      height: size.height - (size.height * 0.1),
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InputWithIcon(
+                  placeholder: "Ingrese un título para la actividad ...",
+                  icon: Icon(Icons.abc),
+                  inputType: TextInputType.text,
+                  label: "Título de la tarea",
+                  attribute: "titleTask",
+                  validator: (value) {
+                    if (validateString(value)) {
+                      Provider.of<ErrorModel>(context, listen: false)
+                          .addError("titleTask", []);
+                      Provider.of<TaskModel>(context, listen: false)
+                          .setTaskForm("title", value);
+                    } else {
+                      Provider.of<ErrorModel>(context, listen: false).addError(
+                          "titleTask", [
+                        "El título de la tarea no puede ser una cadena vacía"
+                      ]);
+                    }
+                  }),
+              SizedBox(
+                height: 10,
+              ),
+              InputWithIcon(
+                  placeholder: "Ingrese una descripción para su tarea ...",
+                  icon: Icon(Icons.pending),
+                  inputType: TextInputType.text,
+                  label: "Descripción de la tarea",
+                  validator: (value) {
+                    if (validateString(value)) {
+                      Provider.of<ErrorModel>(context, listen: false)
+                          .addError("descriptionTask", []);
+                      Provider.of<TaskModel>(context, listen: false)
+                          .setTaskForm("description", value);
+                    } else {
+                      Provider.of<ErrorModel>(context, listen: false).addError(
+                          "descriptionTask",
+                          ["La descripción de la tarea no puede estar vacía."]);
+                    }
+                  },
+                  attribute: "descriptionTask"),
+              SizedBox(
+                height: 10,
+              ),
+              Button(
+                "Seleccione una hora",
+                Colors.black,
+                () {
+                  final time = showTimePicker(
+                      context: context, initialTime: TimeOfDay.now());
+                  time.then((value) {
+                    if (value != null) {
+                      print(value);
+                      timeStr = value;
+                      setState(() {});
+                    }
+                  });
+                },
+                width: size.width,
+              ),
+              DropdownButton(
+                  value: dropdown_value,
+                  items: status
+                      .map((String e) =>
+                          DropdownMenuItem(value: e, child: Text(e)))
+                      .toList(),
+                  onChanged: (String? value) {
+                    if (validateString(value!)) {
+                      Provider.of<ErrorModel>(context, listen: false)
+                          .addError("statusTask", []);
+                      Provider.of<TaskModel>(context, listen: false)
+                          .setTaskForm("status", value);
+                    } else {
+                      Provider.of<ErrorModel>(context, listen: false).addError(
+                          "statusTask",
+                          ["El estado de la tarea no puede estar vacío."]);
+                    }
+                  }),
+              Button(
+                "Seleccione una fecha",
+                Colors.black,
+                () {
+                  final date = showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(const Duration(days: 365)));
+
+                  date.then((value) {
+                    if (value != null) {
+                      print(value);
+                      dateStr = value;
+                      setState(() {});
+                    }
+                  });
+                },
+                width: size.width,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(dateStr != null ? dateStr!.toString() : ""),
+              SizedBox(
+                height: 10,
+              ),
+              Button(
+                "Agregar Tarea",
+                Colors.black,
+                () async {
+                  if (dateStr != null && timeStr != null) {
+                    dateStr = dateStr!.add(Duration(
+                        hours: timeStr!.hour, minutes: timeStr!.minute));
+                    setState(() {});
+                    Provider.of<TaskModel>(context, listen: false)
+                        .setTaskForm("date", dateStr.toString());
+                    if (_formKey.currentState!.validate()) {
+                      print(dateStr.toString());
+                      final newTask =
+                          Provider.of<TaskModel>(context, listen: false)
+                              .taskForm;
+                      try {
+                        final data = await ApiServices().addNewTask(newTask);
+                        newDialog(
+                            context: context,
+                            title: "Información",
+                            content: data["msg"]);
+
+                        Provider.of<TaskModel>(context, listen: false)
+                            .resetTaskForm();
+                      } on Exception catch (e) {
+                        newDialog(
+                            context: context,
+                            title: "Exception",
+                            content: e.toString());
+                      }
+                    } else {
+                      newDialog(
+                          context: context,
+                          title: "Advertencia",
+                          content: "Aún te faltan campos por llenar.");
+                    }
+                  } else {
+                    newDialog(
+                        context: context,
+                        title: "Advertencia",
+                        content: "Debes seleccionar fecha y hora");
+                  }
+                },
+                width: size.width,
+              )
+            ],
+          )),
     );
   }
 }
