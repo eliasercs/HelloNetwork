@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:hello_network_app/src/models/form_model.dart";
 import "package:hello_network_app/src/models/task_model.dart";
 import "package:hello_network_app/src/utils/api.dart";
+import "package:hello_network_app/src/utils/notification_services.dart";
 import "package:hello_network_app/src/utils/validate.dart";
 import "package:hello_network_app/src/widgets/button.dart";
 import "package:hello_network_app/src/widgets/dialog.dart";
@@ -368,6 +369,12 @@ class __TaskAddFormState extends State<_TaskAddForm> {
               SizedBox(
                 height: 10,
               ),
+              Button("Enviar Notificación", Colors.black, () {
+                dateStr = dateStr!.add(
+                    Duration(hours: timeStr!.hour, minutes: timeStr!.minute));
+                setState(() {});
+                showNotification(dateStr!.toString());
+              }),
               Button(
                 "Agregar Tarea",
                 Colors.black,

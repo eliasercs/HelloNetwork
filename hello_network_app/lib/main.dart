@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
+
 import 'package:flutter/material.dart';
 import 'package:hello_network_app/src/models/form_model.dart';
 import 'package:hello_network_app/src/models/project_model.dart';
@@ -15,6 +18,7 @@ import 'package:hello_network_app/src/pages/sign_up.dart';
 
 import "package:flutter/services.dart";
 import 'package:hello_network_app/src/utils/handle_routes.dart';
+import 'package:hello_network_app/src/utils/notification_services.dart';
 import 'package:hello_network_app/src/utils/preferences.dart';
 import 'package:hello_network_app/src/utils/sockets.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +50,9 @@ void connectAndListen() {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
   await _p.initPrefs();
+  await initNotifications();
   connectAndListen();
   runApp(const MainApp());
 }
