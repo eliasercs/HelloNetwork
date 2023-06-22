@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:hello_network_app/src/models/post_model.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
@@ -83,7 +84,8 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserFormModel()),
         ChangeNotifierProvider(create: (_) => ErrorModel()),
         ChangeNotifierProvider(create: (_) => UserModel()),
-        ChangeNotifierProvider(create: (_) => TaskModel())
+        ChangeNotifierProvider(create: (_) => TaskModel()),
+        ChangeNotifierProvider(create: (_) => PostModel())
       ],
       builder: (context, _) => _MyApp(),
     );
@@ -112,8 +114,12 @@ class _MyAppState extends State<_MyApp> {
       debugShowCheckedModeBanner: false,
       initialRoute: "/",
       routes: <String, WidgetBuilder>{
-        "/": (BuildContext context) => checkOnBoarding(context),
-        "/home": (BuildContext context) => checkAuth(Dashboard(), context),
+        "/": (BuildContext context) {
+          return checkOnBoarding(context);
+        },
+        "/home": (BuildContext context) {
+          return checkAuth(Dashboard(), context);
+        },
         "/dashboard": (BuildContext context) {
           return const Dashboard();
         },

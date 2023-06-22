@@ -36,6 +36,7 @@ class Server {
         this.app.use("/api/users", require("../routes/user"))
         this.app.use("/api/auth", require("../routes/auth"))
         this.app.use("/api/tasks", require("../routes/task"))
+        this.app.use("/api/posts", require("../routes/post"))
     }
 
     sockets() {

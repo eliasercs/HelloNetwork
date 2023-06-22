@@ -23,6 +23,10 @@ Map<String, dynamic> _defaultAddTaskError() {
   };
 }
 
+Map<String, dynamic> _defaultAddPostError() {
+  return {"postContent": <String>[]};
+}
+
 class UserFormModel extends ChangeNotifier {
   Map<String, dynamic> _user = {};
 
@@ -79,6 +83,8 @@ class ErrorModel extends ChangeNotifier {
       _error = _defaultSignUpError();
     } else if (_stateErrorForm == "addTask") {
       _error = _defaultAddTaskError();
+    } else if (_stateErrorForm == "post") {
+      _error = _defaultAddPostError();
     } else {
       _error = _defaultLogInError();
     }

@@ -1,13 +1,15 @@
 import "package:flutter/material.dart";
 import "package:hello_network_app/src/models/form_model.dart";
+import "package:hello_network_app/src/utils/api.dart";
+import "package:hello_network_app/src/widgets/dialog.dart";
 //import "package:hello_network_app/src/widgets/button.dart";
 import "package:provider/provider.dart";
 
+import "../models/post_model.dart";
 import "../utils/validate.dart";
 
 class inputText extends StatelessWidget {
-  final String placeholder;
-  inputText({required this.placeholder});
+  inputText();
 
   @override
   Widget build(BuildContext context) {
@@ -22,42 +24,105 @@ class inputText extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Color(0xff273469)),
               borderRadius: BorderRadius.all(Radius.circular(50.0))),
-          hintText: "",
+          hintText: "¿Qué estás pensando?",
           hintStyle: TextStyle(color: Colors.white)),
     );
   }
 }
 
 class inputPost extends StatelessWidget {
-  final String placeholder;
   final double padding;
 
-  const inputPost(
-      {super.key, required this.placeholder, required this.padding});
+  const inputPost({super.key, required this.padding});
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
     return Container(
-      width: size.width,
-      height: 80,
+      child: _inputPostWidget(size: size, padding: padding),
+    );
+  }
+}
+
+class _inputPostWidget extends StatefulWidget {
+  const _inputPostWidget(
+      {super.key, required this.size, required this.padding});
+
+  final Size size;
+  final double padding;
+
+  @override
+  State<_inputPostWidget> createState() => _inputPostWidgetState();
+}
+
+class _inputPostWidgetState extends State<_inputPostWidget> {
+  Color prefColor = Colors.white;
+  TextEditingController controller = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: widget.size.width,
+      padding: EdgeInsets.symmetric(horizontal: widget.padding),
       //color: const Color(0xffe5e5e5),
-      padding: EdgeInsets.symmetric(horizontal: padding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
-              child: inputText(
-            placeholder: placeholder,
-          )),
+              child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                      color: Color(0xff273469),
+                      borderRadius: BorderRadius.circular(50)),
+                  child: TextFormField(
+                    keyboardType: TextInputType.text,
+                    controller: controller,
+                    cursorColor: Color(0xffF9A826),
+                    validator: (value) {},
+                    style: TextStyle(color: Color(0xffF9A826)),
+                    onChanged: (text) {
+                      if (text.isNotEmpty) {
+                        prefColor = Color(0xffF9A826);
+                      } else {
+                        prefColor = Colors.white;
+                      }
+                      setState(() {});
+                    },
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "¿Qué estás pensando?",
+                        hintStyle: TextStyle(color: Colors.white),
+                        focusColor: Color(0xffF9A826),
+                        prefixIcon: Icon(Icons.people),
+                        prefixIconColor: prefColor),
+                  ))),
           TextButton(
               style: TextButton.styleFrom(
                   backgroundColor: Color(0xff273469),
                   shape: CircleBorder(),
                   fixedSize: Size(60, 60)),
-              onPressed: () {
-                print("Publicar");
+              onPressed: () async {
+                if (validateString(controller.text)) {
+                  try {
+                    final response =
+                        await ApiServices().addNewPost(controller.text);
+                    newDialog(
+                        context: context,
+                        title: "Información",
+                        content: response["msg"]);
+                    controller.text = "";
+                  } on Exception catch (e) {
+                    newDialog(
+                        context: context,
+                        title: "Advertencia",
+                        content: e.toString());
+                  }
+                } else {
+                  newDialog(
+                      context: context,
+                      title: "Advertencia",
+                      content:
+                          "El contenido de la publicación no puede ser vacío.");
+                }
               },
               child: const Icon(
                 Icons.send,

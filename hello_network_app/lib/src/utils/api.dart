@@ -103,4 +103,23 @@ class ApiServices {
     }
     return {};
   }
+
+  Future<dynamic> addNewPost(String content) async {
+    var url = Uri.parse("http://10.0.2.2:8000/api/posts/add");
+    final date = DateTime.now();
+    Map<String, dynamic> data = {"content": content, "date": date.toString()};
+
+    final response = await http.post(url,
+        headers: <String, String>{
+          "Content-Type": "application/json",
+          "auth-token": _p.tokenAuth
+        },
+        body: convert.jsonEncode(data));
+
+    if (response.statusCode == 200) {
+      return convert.jsonDecode(response.body);
+    } else {
+      throw Exception("Ha ocurrido un error");
+    }
+  }
 }
