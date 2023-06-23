@@ -1,10 +1,20 @@
 import "package:flutter/material.dart";
+import "package:hello_network_app/src/utils/api.dart";
 import "package:hello_network_app/src/widgets/button.dart";
 import "package:hello_network_app/src/widgets/profile.dart";
 import "package:fluttericon/font_awesome_icons.dart";
 
 class Avatar extends StatelessWidget {
-  const Avatar({super.key});
+  final String name;
+  final String lastname;
+  final String avatar;
+  final String date;
+  const Avatar(
+      {super.key,
+      required this.name,
+      required this.lastname,
+      required this.avatar,
+      required this.date});
 
   @override
   Widget build(BuildContext context) {
@@ -13,17 +23,17 @@ class Avatar extends StatelessWidget {
       children: [
         Container(
           margin: const EdgeInsets.only(right: 10.0),
-          child:
-              ProfileAvatar(50, 50, "graphics/profile/avatar_user.jpg", () {}),
+          child: ProfileAvatarBase64(
+              width: 50, height: 50, image: avatar, callback: () {}),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text("Eliaser Concha",
+          children: [
+            Text("$name $lastname",
                 style: TextStyle(fontFamily: "Poppins", fontSize: 18)),
             Text(
-              "Fecha",
+              date,
               style: TextStyle(fontFamily: "Poppins", fontSize: 12),
             )
           ],
@@ -34,7 +44,8 @@ class Avatar extends StatelessWidget {
 }
 
 class PostText extends StatelessWidget {
-  const PostText({super.key});
+  final String content;
+  PostText({super.key, required this.content});
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +63,8 @@ class PostText extends StatelessWidget {
               color: Colors.white, width: 1, style: BorderStyle.solid),
           borderRadius: BorderRadius.only(
               topRight: radius, bottomLeft: radius, bottomRight: radius)),
-      child: const Text(
-        "Este es un texto de prueba utilizado para crear múltiples componentes de publicación.",
+      child: Text(
+        content,
         style: TextStyle(fontFamily: "Poppins", fontSize: 15),
       ),
     );
@@ -61,16 +72,18 @@ class PostText extends StatelessWidget {
 }
 
 class Count extends StatelessWidget {
-  const Count({super.key});
+  final int reactions;
+  final int comments;
+  Count({super.key, required this.reactions, required this.comments});
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: const [
+    return Row(children: [
       Icon(FontAwesome.thumbs_up),
       Padding(
         padding: EdgeInsets.only(left: 5, right: 10),
         child: Text(
-          "50",
+          reactions.toString(),
           style: TextStyle(fontFamily: "Poppins", fontSize: 15),
         ),
       ),
@@ -78,7 +91,7 @@ class Count extends StatelessWidget {
       Padding(
         padding: EdgeInsets.only(left: 5, right: 10),
         child: Text(
-          "5000",
+          comments.toString(),
           style: TextStyle(fontFamily: "Poppins", fontSize: 15),
         ),
       ),
@@ -105,12 +118,21 @@ class Actions extends StatelessWidget {
 
 class Post extends StatelessWidget {
   final int index;
-  const Post(this.index, {super.key});
+  final Map<String, dynamic> data;
+  Post(this.index, {super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
+    final author = data["author"] as Map<String, dynamic>;
+    final comments = data["comments"] as List;
+    final date = DateTime.parse(data["datetime"]);
+    final y = date.year.toString();
+    final m = date.month.toString();
+    final d = date.day.toString();
+    final h = date.hour.toString();
+    final min = date.minute.toString();
+    print(date);
     return Container(
       width: size.width,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -121,7 +143,22 @@ class Post extends StatelessWidget {
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [Avatar(), PostText(), Count(), Actions()]),
+          children: [
+            Avatar(
+              name: author["name"],
+              lastname: author["lastname"],
+              avatar: data["buff"],
+              date: "$d/$m/$y a las $h:$min",
+            ),
+            PostText(
+              content: data["content"],
+            ),
+            Count(
+              reactions: data["n_reactions"],
+              comments: comments.length,
+            ),
+            Actions()
+          ]),
     );
   }
 }
@@ -146,11 +183,32 @@ class _PostsState extends State<Posts> {
             thickness: 5,
             thumbVisibility: false,
             controller: controller,
-            child: ListView.builder(
-              primary: false,
-              controller: controller,
-              itemCount: 10,
-              itemBuilder: (context, index) => Post(index),
+            child: FutureBuilder(
+              future: ApiServices().getAllPosts(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasData) {
+                    final list = snapshot.data as List;
+                    return ListView.builder(
+                      primary: false,
+                      controller: controller,
+                      itemCount: list.length,
+                      itemBuilder: (context, index) => Post(
+                        index,
+                        data: list[index],
+                      ),
+                    );
+                  } else {
+                    return Center(
+                      child: Text("No hay publicaciones por mostrar"),
+                    );
+                  }
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
             ),
           ),
         ),
@@ -158,3 +216,12 @@ class _PostsState extends State<Posts> {
     });
   }
 }
+
+/*
+ListView.builder(
+              primary: false,
+              controller: controller,
+              itemCount: 10,
+              itemBuilder: (context, index) => Post(index),
+            )
+*/

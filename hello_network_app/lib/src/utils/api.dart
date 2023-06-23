@@ -122,4 +122,15 @@ class ApiServices {
       throw Exception("Ha ocurrido un error");
     }
   }
+
+  Future<dynamic> getAllPosts() async {
+    var url = Uri.parse("http://10.0.2.2:8000/api/posts/all");
+    final response =
+        await http.get(url, headers: {"Content-Type": "application/json"});
+    if (response.statusCode == 200) {
+      return convert.jsonDecode(response.body);
+    } else {
+      throw Exception("Ha ocurrido un error");
+    }
+  }
 }

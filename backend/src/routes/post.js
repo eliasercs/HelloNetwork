@@ -1,11 +1,16 @@
 const {Router} = require("express")
 const {validateFields, validateJWT} = require("../middlewares/validate")
-const {addPost} = require("../controllers/posts")
+const {addPost, getAllPost} = require("../controllers/posts")
 const {check} = require("express-validator")
 
 const router = Router()
 
 router.post("/add", [
-    validateJWT], addPost)
+    check('content').notEmpty().withMessage("El contenido no debe estar vacío"),
+    validateFields,
+    validateJWT
+], addPost)
+
+router.get("/all", getAllPost)
 
 module.exports = router
