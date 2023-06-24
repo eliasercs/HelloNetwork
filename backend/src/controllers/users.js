@@ -1,5 +1,6 @@
 const {request, response} = require("express")
 const {UserModel : User} = require("../models/User")
+const {WorkExperienceModel : Job} = require("../models/WorkExperience")
 const bcrypt = require("bcrypt")
 const fs = require("node:fs")
 const path = require("path")
@@ -66,11 +67,11 @@ const getAvatar = async (req = request, res = response) => {
 }
 
 const getUserAuth = async (req = request, res = response) => {
-    const {name, lastname, avatar, description, id} = req.user
+    const {name, lastname, avatar, description, _id, jobs, education} = req.user
 
     let buff = fs.readFileSync(path.normalize(avatar.image))
 
-    const user = {id, name, lastname, buff: buff.toString(), image: avatar.contentType, description}
+    const user = {_id, name, lastname, buff: buff.toString(), image: avatar.contentType, description, jobs, education}
 
     res.status(200).json(user)
 }
@@ -94,6 +95,15 @@ const getAllUsers = async (req = request, res = response) => {
     res.status(200).json({"data" : data})
 }
 
+const addExperience = async (req = request, res = response) => {
+    const user = req.user
+    const {date_start, date_end, place, position} = req.body
+    const job = new Job({date_start, date_end, place, position})
+    await user.jobs.push(job)
+    await user.save()
+    res.status(200).json({msg: "Experiencia Laboral agregada satisfactoriamente."})
+}
+
 module.exports = {
-    register, avatar, getAvatar, getUserAuth, getAllUsers
+    register, avatar, getAvatar, getUserAuth, getAllUsers, addExperience
 }

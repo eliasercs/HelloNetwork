@@ -1,5 +1,8 @@
 import "package:flutter/material.dart";
 import "package:hello_network_app/src/models/form_model.dart";
+import "package:hello_network_app/src/models/user_model.dart";
+import "package:hello_network_app/src/pages/dashboard.dart";
+import "package:hello_network_app/src/pages/profile.dart";
 import "package:hello_network_app/src/widgets/button.dart";
 import "package:hello_network_app/src/widgets/profile.dart";
 import "package:provider/provider.dart";
@@ -40,7 +43,13 @@ class navbarDashboard extends StatelessWidget {
               height: 65,
               image: image,
               callback: () {
-                Navigator.pushNamed(context, "/user");
+                Map<String, dynamic> user =
+                    Provider.of<UserModel>(context, listen: false).authUser;
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => profilePage(user: user)));
+                //Navigator.pushNamed(context, "/user");
               }),
           /*
           ProfileAvatar(65, 65, "graphics/profile/avatar_user.jpg", () {

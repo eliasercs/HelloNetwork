@@ -133,4 +133,20 @@ class ApiServices {
       throw Exception("Ha ocurrido un error");
     }
   }
+
+  Future<dynamic> addExperience(Map<String, dynamic> data) async {
+    var url = Uri.parse("http://10.0.2.2:8000/api/users/add_experience");
+    final response = await http.post(url,
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": _p.tokenAuth
+        },
+        body: convert.jsonEncode(data));
+
+    if (response.statusCode == 200) {
+      return convert.jsonDecode(response.body);
+    } else {
+      throw Exception("Ocurrió un error");
+    }
+  }
 }

@@ -185,6 +185,9 @@ class _ViewProjectBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final h = description.length;
+    /*
+    */
+
     return OrientationBuilder(
         builder: (context, orientation) => Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -199,11 +202,6 @@ class _ViewProjectBody extends StatelessWidget {
                     ),
                     const SizedBox(
                       height: 10,
-                    ),
-                    CardOne(
-                      title: title,
-                      description: description,
-                      height: double.parse("$h"),
                     ),
                     const SizedBox(
                       height: 10,

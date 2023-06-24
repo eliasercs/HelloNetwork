@@ -125,9 +125,7 @@ class _MyAppState extends State<_MyApp> {
         },
         "/user": (context) {
           final user = Provider.of<UserModel>(context).authUser;
-          return profilePage(
-            image: user["buff"],
-          );
+          return profilePage(user: user);
         },
         "/kanban": (context) {
           return Kanban("Tablero Personal", false);

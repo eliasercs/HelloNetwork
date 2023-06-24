@@ -1,16 +1,24 @@
 import "package:flutter/material.dart";
+import "package:hello_network_app/src/models/user_model.dart";
+import "package:hello_network_app/src/pages/edit_profile.dart";
 import "package:hello_network_app/src/utils/api.dart";
 import "package:hello_network_app/src/widgets/button.dart";
 import "package:hello_network_app/src/widgets/navbar.dart";
 import "package:hello_network_app/src/widgets/profile.dart";
+import "package:provider/provider.dart";
 
 class _navCard extends StatelessWidget {
+  final Map<String, dynamic> user;
   final String title;
   final IconData? iconData;
-  const _navCard(this.title, this.iconData, {super.key});
+  final Function callback;
+  const _navCard(this.title, this.iconData,
+      {super.key, required this.user, required this.callback});
 
   @override
   Widget build(BuildContext context) {
+    final id = Provider.of<UserModel>(context).getValue("_id");
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -19,18 +27,19 @@ class _navCard extends StatelessWidget {
           title,
           style: TextStyle(fontFamily: "Poppins", fontSize: 18),
         ),
-        Icon(
-          iconData,
-          color: Colors.black,
-        )
+        user["_id"] == id
+            ? IconBtn(Colors.transparent, Colors.black, iconData!, () {
+                callback();
+              })
+            : SizedBox()
       ],
     );
   }
 }
 
 class navBarProfile extends StatelessWidget {
-  final String image;
-  navBarProfile({required this.image});
+  final Map<String, dynamic> user;
+  navBarProfile({required this.user});
 
   void settings() {
     //ApiServices().getAvatar();
@@ -40,6 +49,9 @@ class navBarProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final id = Provider.of<UserModel>(context).getValue("_id");
+    final name = user["name"];
+    final lastname = user["lastname"];
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       width: size.width,
@@ -53,7 +65,7 @@ class navBarProfile extends StatelessWidget {
         ProfileAvatarBase64(
             width: 150,
             height: 150,
-            image: image,
+            image: user["buff"],
             callback: () {
               Navigator.pushNamed(context, "/chat_user");
             }),
@@ -63,27 +75,23 @@ class navBarProfile extends StatelessWidget {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
+          textDirection: TextDirection.ltr,
           children: [
-            const Text("Eliaser Concha",
-                style: TextStyle(
-                    fontFamily: "Poppins", fontSize: 25, color: Colors.white)),
-            const Text(
-              "@eliasercs",
-              style: TextStyle(
-                  fontFamily: "Poppins", fontSize: 20, color: Colors.white),
+            Container(
+              width: size.width * 0.5,
+              child: Text("$name $lastname",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: "Poppins",
+                      color: Colors.white)),
             ),
             const SizedBox(
               height: 5,
             ),
-            "2" != "1"
-                ? Button(
-                    "Seguir",
-                    const Color(0xfffca311),
-                    () {},
-                    textColor: Color(0xff1E2749),
-                  )
+            user["_id"] != id
+                ? SizedBox()
                 : Button(
-                    "Settings",
+                    "Cerrar sesión",
                     const Color(0xfffca311),
                     settings,
                     textColor: Colors.black,
@@ -96,15 +104,38 @@ class navBarProfile extends StatelessWidget {
 }
 
 // Tarjeta que recibe una lista de datos
-class _cardList extends StatelessWidget {
+class _cardList extends StatefulWidget {
   final String title;
   final IconData? icon;
+  final Map<String, dynamic> user;
+  final List list;
+  final Function callback;
 
-  const _cardList(this.title, this.icon, {super.key});
+  _cardList(this.title, this.icon,
+      {super.key,
+      required this.user,
+      required this.list,
+      required this.callback});
+
+  @override
+  State<_cardList> createState() => _cardListState();
+}
+
+class _cardListState extends State<_cardList> {
+  ScrollController controller = ScrollController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print(widget.list);
     final size = MediaQuery.of(context).size;
+    final data = widget.list;
     return Container(
         width: size.width,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -113,17 +144,78 @@ class _cardList extends StatelessWidget {
         ),
         child: Column(
           children: [
-            _navCard(title, icon),
+            _navCard(
+              widget.title,
+              widget.icon,
+              user: widget.user,
+              callback: widget.callback,
+            ),
             SizedBox(height: 10),
-            Container(
-              alignment: AlignmentDirectional.centerStart,
-              child: const Text(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
-                style: TextStyle(fontFamily: "Poppins", fontSize: 15),
-              ),
-            )
+            widget.list.length > 0
+                ? Container(
+                    height: size.height * 0.15,
+                    child: ListView.builder(
+                        controller: controller,
+                        scrollDirection: Axis.vertical,
+                        itemCount: data.length,
+                        itemBuilder: (context, index) {
+                          final element = data[index];
+                          DateTime start =
+                              DateTime.parse(element["date_start"]);
+                          DateTime end = DateTime.parse(element["date_end"]);
+                          final ys = start.year.toString();
+                          final ms = start.month.toString();
+                          final ds = start.day.toString();
+
+                          final ye = end.year.toString();
+                          final me = end.month.toString();
+                          final de = end.day.toString();
+
+                          return _ListItem(
+                            place: element["place"],
+                            date: "$ds/$ms/$ys - $de/$me/$ye",
+                            position: element["position"],
+                          );
+                        }))
+                : SizedBox()
           ],
         ));
+  }
+}
+
+class _ListItem extends StatelessWidget {
+  const _ListItem(
+      {super.key,
+      required this.place,
+      required this.date,
+      required this.position});
+
+  final String place;
+  final String date;
+  final String position;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          // Place
+          place,
+          style: TextStyle(fontFamily: "PoppinsMedium", fontSize: 15),
+        ),
+        Text(
+          // Fechas
+          date,
+          style: TextStyle(fontFamily: "Poppins", fontSize: 12),
+        ),
+        Text(
+          // Descripción, cargo o lo que sea
+          position,
+          style: TextStyle(fontFamily: "Poppins", fontSize: 12),
+        )
+      ],
+    );
   }
 }
 
@@ -131,12 +223,14 @@ class CardOne extends StatelessWidget {
   final String title;
   final String description;
   final double height;
+  final Map<String, dynamic> user;
 
   const CardOne(
       {super.key,
       required this.title,
       required this.description,
-      this.height = 50});
+      this.height = 50,
+      required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -149,30 +243,38 @@ class CardOne extends StatelessWidget {
         ),
         child: Column(
           children: [
-            _navCard(title, Icons.dangerous),
+            _navCard(
+              title,
+              Icons.edit,
+              user: user,
+              callback: () {},
+            ),
             const SizedBox(height: 10),
-            Container(
-              height: height,
-              alignment: AlignmentDirectional.centerStart,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: RichText(
-                    textAlign: TextAlign.justify,
-                    text: TextSpan(
-                        text: description,
-                        style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 15,
-                            color: Colors.black))),
-              ),
-            )
+            description != ""
+                ? Container(
+                    height: height,
+                    alignment: AlignmentDirectional.centerStart,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: RichText(
+                          textAlign: TextAlign.justify,
+                          text: TextSpan(
+                              text: description,
+                              style: const TextStyle(
+                                  fontFamily: "Poppins",
+                                  fontSize: 15,
+                                  color: Colors.black))),
+                    ),
+                  )
+                : SizedBox()
           ],
         ));
   }
 }
 
 class profileBody extends StatelessWidget {
-  const profileBody({super.key});
+  final Map<String, dynamic> user;
+  const profileBody({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -186,18 +288,34 @@ class profileBody extends StatelessWidget {
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
-                const followsNumbers(),
                 const SizedBox(height: 5),
                 CardOne(
                   height: (size.height * 0.2),
                   title: "Descripción",
-                  description:
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                  description: user["description"],
+                  user: user,
                 ),
                 const SizedBox(height: 5),
-                const _cardList("Educación", Icons.abc),
+                _cardList(
+                  "Educación",
+                  Icons.add,
+                  user: user,
+                  list: user["education"],
+                  callback: () {},
+                ),
                 const SizedBox(height: 5),
-                const _cardList("Experiencia Laboral", Icons.abc),
+                _cardList(
+                  "Experiencia Laboral",
+                  Icons.add,
+                  user: user,
+                  list: user["jobs"],
+                  callback: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditExperience()));
+                  },
+                ),
               ],
             )),
       ),
@@ -205,41 +323,10 @@ class profileBody extends StatelessWidget {
   }
 }
 
-class followsNumbers extends StatelessWidget {
-  const followsNumbers({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    return Container(
-      width: size.width,
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(color: Colors.black12),
-      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Column(
-          children: [Text("1260"), Text("Seguidores")],
-        ),
-        SizedBox(
-          width: 20,
-        ),
-        Column(
-          children: [Text("0"), Text("Seguidos")],
-        ),
-        SizedBox(
-          width: 20,
-        ),
-        Column(
-          children: [Text("0"), Text("Publicaciones")],
-        )
-      ]),
-    );
-  }
-}
-
 class profilePage extends StatelessWidget {
-  final String image;
-  profilePage({required this.image});
+  final Map<String, dynamic> user;
+
+  profilePage({required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -249,9 +336,9 @@ class profilePage extends StatelessWidget {
         children: [
           navbarRoute("Perfil de Usuario"),
           navBarProfile(
-            image: image,
+            user: user,
           ),
-          Expanded(child: profileBody())
+          Expanded(child: profileBody(user: user))
         ],
       )),
     );

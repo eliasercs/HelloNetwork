@@ -132,7 +132,6 @@ class Post extends StatelessWidget {
     final d = date.day.toString();
     final h = date.hour.toString();
     final min = date.minute.toString();
-    print(date);
     return Container(
       width: size.width,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

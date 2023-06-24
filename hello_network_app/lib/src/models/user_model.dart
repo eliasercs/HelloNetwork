@@ -16,6 +16,8 @@ class UserModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  dynamic getValue(String property) => _user[property];
+
   void setAuth(bool state) {
     _userAuth = state;
     notifyListeners();
