@@ -165,4 +165,20 @@ class ApiServices {
       throw Exception("Ocurrió un error");
     }
   }
+
+  Future<dynamic> updateDescription(String data) async {
+    var url = Uri.parse("http://10.0.2.2:8000/api/users/description");
+    final response = await http.put(url,
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": _p.tokenAuth
+        },
+        body: convert.jsonEncode({"description": data}));
+
+    if (response.statusCode == 200) {
+      return convert.jsonDecode(response.body);
+    } else {
+      throw Exception("Ocurrió un error");
+    }
+  }
 }

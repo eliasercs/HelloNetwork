@@ -1,5 +1,5 @@
 const {Router} = require("express")
-const {register, avatar, getAvatar, getUserAuth, getAllUsers, addExperience, addEducationHistory} = require("../controllers/users")
+const {register, avatar, getAvatar, getUserAuth, getAllUsers, addExperience, addEducationHistory, updateDescription} = require("../controllers/users")
 const {validateFields, validateJWT} = require("../middlewares/validate")
 const {check} = require("express-validator")
 const upload = require("../middlewares/storage")
@@ -25,5 +25,7 @@ router.get("/all_users", validateJWT, getAllUsers)
 
 router.post("/add_experience",validateJWT, addExperience)
 router.post("/add_education", validateJWT, addEducationHistory)
+
+router.put("/description", validateJWT, updateDescription)
 
 module.exports = router

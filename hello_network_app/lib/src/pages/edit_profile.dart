@@ -6,6 +6,50 @@ import 'package:hello_network_app/src/widgets/dialog.dart';
 import 'package:hello_network_app/src/widgets/navbar.dart';
 import 'package:provider/provider.dart';
 
+Future<void> editDescription(BuildContext context) async {
+  String text = "";
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Actualizar descripción"),
+          content: _EditInput(
+            placeholder: "Descripción",
+            icon: Icon(Icons.people),
+            callback: (value) {
+              text = value;
+            },
+          ),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context, "Cancel"),
+                child: Text("Cancelar")),
+            TextButton(
+                onPressed: () async {
+                  if (text.isNotEmpty) {
+                    try {
+                      final response =
+                          await ApiServices().updateDescription(text);
+                      Provider.of<UserModel>(context, listen: false)
+                          .setAuthUser(response["user"]);
+                      newDialog(
+                          context: context,
+                          title: "Información",
+                          content: response["msg"]);
+                    } on Exception catch (e) {
+                      newDialog(
+                          context: context,
+                          title: "Exception",
+                          content: e.toString());
+                    }
+                  }
+                },
+                child: Text("Actualizar"))
+          ],
+        );
+      });
+}
+
 class EditExperience extends StatefulWidget {
   const EditExperience({super.key});
 

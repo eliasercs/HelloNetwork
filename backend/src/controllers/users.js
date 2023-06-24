@@ -123,6 +123,20 @@ const addEducationHistory = async (req = request, res = response) => {
     res.status(200).json({msg: "Historial Académico agregado satisfactoriamente.", user: data})
 }
 
+const updateDescription = async (req = request, res = response) => {
+    const user = req.user
+
+    const {description} = req.body
+
+    user.description = description
+    await user.save()
+
+    const {name, lastname, avatar, description:des, _id, jobs, education} = user
+    let buff = fs.readFileSync(path.normalize(avatar.image))
+    const data = {_id, name, lastname, buff: buff.toString(), image: avatar.contentType, description: des, jobs, education}
+    res.status(200).json({msg: "Descripción actualizada satisfactoriamente.", user: data})
+}
+
 module.exports = {
-    register, avatar, getAvatar, getUserAuth, getAllUsers, addExperience, addEducationHistory
+    register, avatar, getAvatar, getUserAuth, getAllUsers, addExperience, addEducationHistory, updateDescription
 }

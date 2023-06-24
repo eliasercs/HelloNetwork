@@ -246,7 +246,9 @@ class CardOne extends StatelessWidget {
               title,
               Icons.edit,
               user: user,
-              callback: () {},
+              callback: () {
+                editDescription(context);
+              },
             ),
             const SizedBox(height: 10),
             description != ""
