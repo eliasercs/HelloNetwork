@@ -50,7 +50,7 @@ const avatar = async (req = request, res = response, next) => {
 
     await User.updateOne({email},{avatar: final_img})
 
-    res.json({img: "Avatar almacenado satisfactoriamente."})
+    res.status(200).json({img: "Avatar almacenado satisfactoriamente."})
 }
 
 const getAvatar = async (req = request, res = response) => {
@@ -68,11 +68,11 @@ const getAvatar = async (req = request, res = response) => {
 }
 
 const getUserAuth = async (req = request, res = response) => {
-    const {name, lastname, avatar, description, _id, jobs, education} = req.user
+    const {name, lastname, email, avatar, description, _id, jobs, education} = req.user
 
     let buff = fs.readFileSync(path.normalize(avatar.image))
 
-    const user = {_id, name, lastname, buff: buff.toString(), image: avatar.contentType, description, jobs, education}
+    const user = {_id, name, lastname, email, buff: buff.toString(), image: avatar.contentType, description, jobs, education}
 
     res.status(200).json(user)
 }
@@ -103,9 +103,9 @@ const addExperience = async (req = request, res = response) => {
     await user.jobs.push(job)
     await user.save()
 
-    const {name, lastname, avatar, description, _id, jobs, education} = user
+    const {name, lastname, email, avatar, description, _id, jobs, education} = user
     let buff = fs.readFileSync(path.normalize(avatar.image))
-    const data = {_id, name, lastname, buff: buff.toString(), image: avatar.contentType, description, jobs, education}
+    const data = {_id, name, lastname,email, buff: buff.toString(), image: avatar.contentType, description, jobs, education}
 
     res.status(200).json({msg: "Experiencia Laboral agregada satisfactoriamente.", user: data})
 }
@@ -117,9 +117,9 @@ const addEducationHistory = async (req = request, res = response) => {
     await user.education.push(history)
     await user.save()
 
-    const {name, lastname, avatar, description, _id, jobs, education} = user
+    const {name, lastname, email,  avatar, description, _id, jobs, education} = user
     let buff = fs.readFileSync(path.normalize(avatar.image))
-    const data = {_id, name, lastname, buff: buff.toString(), image: avatar.contentType, description, jobs, education}
+    const data = {_id, name, lastname, email, buff: buff.toString(), image: avatar.contentType, description, jobs, education}
     res.status(200).json({msg: "Historial Académico agregado satisfactoriamente.", user: data})
 }
 
@@ -131,9 +131,9 @@ const updateDescription = async (req = request, res = response) => {
     user.description = description
     await user.save()
 
-    const {name, lastname, avatar, description:des, _id, jobs, education} = user
+    const {name, lastname, email, avatar, description:des, _id, jobs, education} = user
     let buff = fs.readFileSync(path.normalize(avatar.image))
-    const data = {_id, name, lastname, buff: buff.toString(), image: avatar.contentType, description: des, jobs, education}
+    const data = {_id, name, lastname, email, buff: buff.toString(), image: avatar.contentType, description: des, jobs, education}
     res.status(200).json({msg: "Descripción actualizada satisfactoriamente.", user: data})
 }
 

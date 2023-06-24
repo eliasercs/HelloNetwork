@@ -1,9 +1,11 @@
+import "package:camera/camera.dart";
 import "package:flutter/material.dart";
 import "package:hello_network_app/src/models/user_model.dart";
 import "package:hello_network_app/src/pages/edit_profile.dart";
 import "package:hello_network_app/src/utils/api.dart";
 import "package:hello_network_app/src/utils/preferences.dart";
 import "package:hello_network_app/src/widgets/button.dart";
+import "package:hello_network_app/src/widgets/camera.dart";
 import "package:hello_network_app/src/widgets/navbar.dart";
 import "package:hello_network_app/src/widgets/profile.dart";
 import "package:provider/provider.dart";
@@ -69,8 +71,30 @@ class navBarProfile extends StatelessWidget {
             width: 150,
             height: 150,
             image: user["buff"],
-            callback: () {
-              Navigator.pushNamed(context, "/chat_user");
+            callback: () async {
+              if (user["_id"] == id) {
+                final cameras = await availableCameras();
+                final primary = cameras.first;
+                // ignore: use_build_context_synchronously
+                showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          title: Text("Actualizar foto de perfil"),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              TakePictureScreen(
+                                                  camera: primary)));
+                                },
+                                child: Text("Abrir cámara"))
+                          ],
+                        ));
+              }
+              //Navigator.pushNamed(context, "/chat_user");
             }),
         const SizedBox(
           width: 15,

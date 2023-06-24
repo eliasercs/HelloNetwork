@@ -1,5 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:hello_network_app/src/models/user_model.dart';
 import 'package:hello_network_app/src/utils/preferences.dart';
+import 'package:hello_network_app/src/widgets/dialog.dart';
 import "package:http/http.dart" as http;
 import 'dart:convert' as convert;
 
@@ -179,6 +184,25 @@ class ApiServices {
       return convert.jsonDecode(response.body);
     } else {
       throw Exception("Ocurrió un error");
+    }
+  }
+
+  Future<dynamic> setAvatar(File image, String email) async {
+    var url = Uri.parse("http://10.0.2.2:8000/api/users/avatar");
+    Map<String, dynamic> map = {};
+    final request = http.MultipartRequest("POST", url);
+
+    final file = await http.MultipartFile.fromPath("avatar", image.path);
+
+    request.fields["email"] = email;
+    request.files.add(file);
+
+    final response = await request.send();
+    if (response.statusCode == 200) {
+      Map<String, dynamic> r = {"msg": "Imagen actualizada satisfactoriamente"};
+      return r;
+    } else {
+      throw Exception("Error al actualizar avatar");
     }
   }
 }

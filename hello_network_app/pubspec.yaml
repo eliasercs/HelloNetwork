@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   blur: ^3.1.0
+  camera: ^0.10.5+2
   email_validator: ^2.1.17
   flutter:
     sdk: flutter
@@ -15,6 +16,8 @@ dependencies:
   flutter_native_timezone_updated_gradle: ^2.0.3
   fluttericon: ^2.0.0
   http: ^0.13.6
+  path: ^1.8.2
+  path_provider: ^2.0.15
   provider: ^6.0.5
   shared_preferences: ^2.1.1
   socket_io_client: ^2.0.2
