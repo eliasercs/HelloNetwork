@@ -30,4 +30,8 @@ class Preferences {
   void setTokenAuth(String token) {
     _prefs.setString("token-auth", token);
   }
+
+  void clearToken() {
+    _prefs.remove("token-auth");
+  }
 }

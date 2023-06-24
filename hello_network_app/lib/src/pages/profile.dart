@@ -2,10 +2,13 @@ import "package:flutter/material.dart";
 import "package:hello_network_app/src/models/user_model.dart";
 import "package:hello_network_app/src/pages/edit_profile.dart";
 import "package:hello_network_app/src/utils/api.dart";
+import "package:hello_network_app/src/utils/preferences.dart";
 import "package:hello_network_app/src/widgets/button.dart";
 import "package:hello_network_app/src/widgets/navbar.dart";
 import "package:hello_network_app/src/widgets/profile.dart";
 import "package:provider/provider.dart";
+
+Preferences _p = Preferences();
 
 class _navCard extends StatelessWidget {
   final Map<String, dynamic> user;
@@ -41,9 +44,9 @@ class navBarProfile extends StatelessWidget {
   final Map<String, dynamic> user;
   navBarProfile({required this.user});
 
-  void settings() {
-    //ApiServices().getAvatar();
-    print("Settings");
+  void settings(context) {
+    _p.clearToken();
+    Navigator.popAndPushNamed(context, "/");
   }
 
   @override
@@ -93,7 +96,9 @@ class navBarProfile extends StatelessWidget {
                 : Button(
                     "Cerrar sesión",
                     const Color(0xfffca311),
-                    settings,
+                    () {
+                      settings(context);
+                    },
                     textColor: Colors.black,
                   )
           ],
