@@ -133,7 +133,6 @@ class _cardListState extends State<_cardList> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.list);
     final size = MediaQuery.of(context).size;
     final data = widget.list;
     return Container(
@@ -301,7 +300,12 @@ class profileBody extends StatelessWidget {
                   Icons.add,
                   user: user,
                   list: user["education"],
-                  callback: () {},
+                  callback: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditEducationHistory()));
+                  },
                 ),
                 const SizedBox(height: 5),
                 _cardList(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hello_network_app/src/models/user_model.dart';
 import 'package:hello_network_app/src/utils/api.dart';
 import 'package:hello_network_app/src/widgets/button.dart';
 import 'package:hello_network_app/src/widgets/dialog.dart';
 import 'package:hello_network_app/src/widgets/navbar.dart';
+import 'package:provider/provider.dart';
 
 class EditExperience extends StatefulWidget {
   const EditExperience({super.key});
@@ -78,6 +80,107 @@ class _EditExperienceState extends State<EditExperience> {
                       "date_end": date_end.toString()
                     };
                     final response = await ApiServices().addExperience(data);
+                    // ignore: use_build_context_synchronously
+                    Provider.of<UserModel>(context, listen: false)
+                        .setAuthUser(response["user"]);
+                    newDialog(
+                        context: context,
+                        title: "Información",
+                        content: response["msg"]);
+                  } on Exception catch (e) {
+                    newDialog(
+                        context: context,
+                        title: "Exception",
+                        content: e.toString());
+                  }
+                }
+              })
+            ]),
+          )
+        ],
+      ),
+    ));
+  }
+}
+
+class EditEducationHistory extends StatefulWidget {
+  const EditEducationHistory({super.key});
+
+  @override
+  State<EditEducationHistory> createState() => _EditEducationHistoryState();
+}
+
+class _EditEducationHistoryState extends State<EditEducationHistory> {
+  DateTime? date_start;
+  DateTime? date_end;
+  String place = "";
+  String position = "";
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+        child: Scaffold(
+      body: Column(
+        children: [
+          navbarRoute("Agregar Historial Académico"),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Column(children: [
+              _EditInput(
+                icon: Icon(Icons.map),
+                placeholder: "Ingrese el lugar de estudio",
+                callback: (value) {
+                  place = value;
+                  setState(() {});
+                },
+              ),
+              _EditInput(
+                icon: Icon(Icons.work),
+                placeholder: "Ingrese su posición o cargo",
+                callback: (value) {
+                  position = value;
+                  setState(() {});
+                },
+              ),
+              Button("Seleccionar Fecha", Colors.black, () async {
+                final date = await showDateRangePicker(
+                    context: context,
+                    firstDate:
+                        DateTime.now().subtract(Duration(days: (20 * 365))),
+                    lastDate: DateTime.now().add(Duration(days: 20 * 365)));
+
+                if (date != null) {
+                  setState(() {
+                    date_start = date!.start;
+                    date_end = date.end;
+                  });
+                }
+              }),
+              Button("Agregar", Colors.black, () async {
+                if (position == "" || place == "") {
+                  newDialog(
+                      context: context,
+                      title: "Advertencia",
+                      content:
+                          "El campo posición/lugar no puede quedar vacío.");
+                } else if (date_start == null || date_end == null) {
+                  newDialog(
+                      context: context,
+                      title: "Advertencia",
+                      content:
+                          "El rango de fecha seleccionado no puede estar vacío.");
+                } else {
+                  try {
+                    Map<String, dynamic> data = {
+                      "place": place,
+                      "position": position,
+                      "date_start": date_start.toString(),
+                      "date_end": date_end.toString()
+                    };
+                    final response =
+                        await ApiServices().addEducationHistory(data);
+                    // ignore: use_build_context_synchronously
+                    Provider.of<UserModel>(context, listen: false)
+                        .setAuthUser(response["user"]);
                     newDialog(
                         context: context,
                         title: "Información",

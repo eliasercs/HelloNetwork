@@ -1,6 +1,7 @@
 const {request, response} = require("express")
 const {UserModel : User} = require("../models/User")
 const {WorkExperienceModel : Job} = require("../models/WorkExperience")
+const {EducationModel : EducationHistory} = require("../models/Education")
 const bcrypt = require("bcrypt")
 const fs = require("node:fs")
 const path = require("path")
@@ -101,9 +102,27 @@ const addExperience = async (req = request, res = response) => {
     const job = new Job({date_start, date_end, place, position})
     await user.jobs.push(job)
     await user.save()
-    res.status(200).json({msg: "Experiencia Laboral agregada satisfactoriamente."})
+
+    const {name, lastname, avatar, description, _id, jobs, education} = user
+    let buff = fs.readFileSync(path.normalize(avatar.image))
+    const data = {_id, name, lastname, buff: buff.toString(), image: avatar.contentType, description, jobs, education}
+
+    res.status(200).json({msg: "Experiencia Laboral agregada satisfactoriamente.", user: data})
+}
+
+const addEducationHistory = async (req = request, res = response) => {
+    const user = req.user
+    const {date_start, date_end, place, position} = req.body
+    const history = await new EducationHistory({date_start, date_end, place, position})
+    await user.education.push(history)
+    await user.save()
+
+    const {name, lastname, avatar, description, _id, jobs, education} = user
+    let buff = fs.readFileSync(path.normalize(avatar.image))
+    const data = {_id, name, lastname, buff: buff.toString(), image: avatar.contentType, description, jobs, education}
+    res.status(200).json({msg: "Historial Académico agregado satisfactoriamente.", user: data})
 }
 
 module.exports = {
-    register, avatar, getAvatar, getUserAuth, getAllUsers, addExperience
+    register, avatar, getAvatar, getUserAuth, getAllUsers, addExperience, addEducationHistory
 }
