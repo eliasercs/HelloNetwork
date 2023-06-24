@@ -1,8 +1,7 @@
 const {Schema, model} = require("mongoose")
-const {UserSchema} = require("./User")
 
 const CommentSchema = Schema({
-    author: {type: UserSchema, required: [true]},
+    author: {type: String, required: [true]},
     datetime: {type: String, required: [true]},
     comment: {type: String, required: [true]}
 })

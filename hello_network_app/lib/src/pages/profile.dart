@@ -285,6 +285,8 @@ class profileBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final d = user["description"];
+    print("Description $d");
     return Container(
       width: size.width,
       height: size.height,

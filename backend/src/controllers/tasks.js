@@ -17,7 +17,7 @@ const addNewTask = async (req = request, res = response) => {
         users_data = undefined
     }
 
-    const addTask = await new Task({title, author: user, description, status, sprint_id: sprint, users: users_data, date: date_task})
+    const addTask = await new Task({title, author: user["_id"], description, status, sprint_id: sprint, users: users_data, date: date_task})
     await addTask.save()
 
     res.status(200).json({msg: "Tarea creada satisfactoriamente."})
@@ -26,10 +26,10 @@ const addNewTask = async (req = request, res = response) => {
 const getPersonalTasks = async (req = request, res = response) => {
     const user = req.user
 
-    const planificado = await Task.find({author: user, sprint_id: undefined, status: "Por hacer"})
-    const proceso = await Task.find({author: user, sprint_id: undefined, status: "En proceso"})
-    const completado = await Task.find({author: user, sprint_id: undefined, status: "Completado"})
-    const cancelado = await Task.find({author: user, sprint_id: undefined, status: "Cancelado"})
+    const planificado = await Task.find({author: user["_id"], sprint_id: undefined, status: "Por hacer"})
+    const proceso = await Task.find({author: user["_id"], sprint_id: undefined, status: "En proceso"})
+    const completado = await Task.find({author: user["_id"], sprint_id: undefined, status: "Completado"})
+    const cancelado = await Task.find({author: user["_id"], sprint_id: undefined, status: "Cancelado"})
 
     const data = {planificado, proceso, completado, cancelado}
 

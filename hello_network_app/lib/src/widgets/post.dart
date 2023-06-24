@@ -1,4 +1,6 @@
 import "package:flutter/material.dart";
+import "package:hello_network_app/src/pages/dashboard.dart";
+import "package:hello_network_app/src/pages/profile.dart";
 import "package:hello_network_app/src/utils/api.dart";
 import "package:hello_network_app/src/widgets/button.dart";
 import "package:hello_network_app/src/widgets/profile.dart";
@@ -9,12 +11,14 @@ class Avatar extends StatelessWidget {
   final String lastname;
   final String avatar;
   final String date;
+  final Map<String, dynamic> profile;
   const Avatar(
       {super.key,
       required this.name,
       required this.lastname,
       required this.avatar,
-      required this.date});
+      required this.date,
+      required this.profile});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +28,18 @@ class Avatar extends StatelessWidget {
         Container(
           margin: const EdgeInsets.only(right: 10.0),
           child: ProfileAvatarBase64(
-              width: 50, height: 50, image: avatar, callback: () {}),
+              width: 50,
+              height: 50,
+              image: avatar,
+              callback: () {
+                Map<String, dynamic> another_user = profile["author"];
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => profilePage(
+                              user: another_user,
+                            )));
+              }),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,11 +159,11 @@ class Post extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Avatar(
-              name: author["name"],
-              lastname: author["lastname"],
-              avatar: data["buff"],
-              date: "$d/$m/$y a las $h:$min",
-            ),
+                name: author["name"],
+                lastname: author["lastname"],
+                avatar: data["buff"],
+                date: "$d/$m/$y a las $h:$min",
+                profile: data),
             PostText(
               content: data["content"],
             ),
