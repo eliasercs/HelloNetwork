@@ -64,8 +64,8 @@ class Tabs extends StatelessWidget {
               MaterialPageRoute(
                   builder: (context) => Kanban("Tareas Individuales", false)));
         }),
-        _TabButton("Tablero de Proyectos", "graphics/bg/2.jpg", () {
-          Navigator.pushNamed(context, "/select_project");
+        _TabButton("Chat entre usuarios", "graphics/bg/2.jpg", () {
+          Navigator.pushNamed(context, "/chat_user");
         })
       ]),
     );

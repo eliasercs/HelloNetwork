@@ -3,6 +3,7 @@ const { checkSockets } = require("../middlewares/validate");
 const ChatInfo = require("../models/ChatInfo");
 const Message = require("../models/Message");
 const {UserModel : User} = require("../models/User");
+const jwt = require("jsonwebtoken")
 
 const fs = require("node:fs");
 const path = require("node:path");
@@ -24,12 +25,14 @@ const getMessage = async (payload, user) => {
 
     result1 = result1.map((element) => {
         const { content, _id, author, receiver, date, __v } = element;
-        return { _id, content, author, receiver, date, __v, buff: buff1 };
+        let c = jwt.verify(content, `${date}`)
+        return { _id, content: c["message"], author, receiver, date, __v, buff: buff1 };
       });
 
   result2 = result2.map((element) => {
     const { content, _id, author, receiver, date, __v } = element;
-    return { _id, content, author, receiver, date, __v, buff: buff2 };
+    let c = jwt.verify(content, `${date}`)
+    return { _id, content: c["message"], author, receiver, date, __v, buff: buff2 };
   });
 
   let result = [...result1, ...result2];
@@ -70,7 +73,7 @@ const socketController = async (socket, io) => {
     console.log(payload);
     const { uid, message } = payload;
 
-    console.log(`De: ${user.id} Para: ${uid}`);
+    //console.log(`De: ${user.id} Para: ${uid}`);
 
     const msg = await new Message({
       content: message,
@@ -78,6 +81,9 @@ const socketController = async (socket, io) => {
       receiver: uid,
       date: Date.now()
     });
+    const msg_c = jwt.sign({message}, `${msg["date"]}`)
+    console.log(msg_c)
+    msg.content = msg_c
     await msg.save();
 
     const allMessage = await getMessage(uid, user)

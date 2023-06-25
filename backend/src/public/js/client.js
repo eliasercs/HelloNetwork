@@ -4,7 +4,7 @@ const sendMessage = document.getElementById("sendMessage")
 const messageContainer = document.getElementById("messageContainer")
 const users_active = document.getElementById("users-active")
 
-let id_user = "648cc2f2dd3f778c3aebc982"
+let id_user = "649781c133bd1657a2147c61"
 
 const user = {
     name: "Soporte",

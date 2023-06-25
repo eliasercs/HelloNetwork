@@ -122,14 +122,16 @@ class UserChat extends StatelessWidget {
                     final data = snapshot.data;
                     return ListView.builder(
                         itemCount: data!.length,
-                        itemBuilder: ((context, index) =>
-                            data[index]["author"] == user["id"]
-                                ? ChatTextLeft(
-                                    text: data[index]["content"],
-                                    avatar: data[index]["buff"])
-                                : ChatTextRight(
-                                    text: data[index]["content"],
-                                    avatar: data[index]["buff"])));
+                        itemBuilder: ((context, index) {
+                          print(data[index]["author"] == user["_id"]);
+                          return data[index]["author"] == user["_id"]
+                              ? ChatTextLeft(
+                                  text: data[index]["content"],
+                                  avatar: data[index]["buff"])
+                              : ChatTextRight(
+                                  text: data[index]["content"],
+                                  avatar: data[index]["buff"]);
+                        }));
                   } else {
                     return Text("");
                   }
