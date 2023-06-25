@@ -205,4 +205,66 @@ class ApiServices {
       throw Exception("Error al actualizar avatar");
     }
   }
+
+  Future<dynamic> countCommentsAndReactions(String id_post) async {
+    var url =
+        Uri.parse("http://10.0.2.2:8000/api/posts/count?id_post=${id_post}");
+    final response =
+        await http.get(url, headers: {"Content-Type": "application/json"});
+    if (response.statusCode == 200) {
+      return convert.jsonDecode(response.body);
+    } else {
+      throw Exception(
+          "No se han podido contar las reacciones y/o comentarios.");
+    }
+  }
+
+  Future<dynamic> addReaction(String id_post) async {
+    var url = Uri.parse("http://10.0.2.2:8000/api/posts/add_reaction");
+    final response = await http.post(url,
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": _p.tokenAuth
+        },
+        body: jsonEncode({"id_post": id_post}));
+    if (response.statusCode == 200) {
+      return convert.jsonDecode(response.body);
+    } else {
+      throw Exception(
+          "No se ha podido agregar/eliminar la reacción a esta publicación.");
+    }
+  }
+
+  Future<dynamic> addComment(String id_post, String content) async {
+    var url = Uri.parse("http://10.0.2.2:8000/api/posts/add_comment");
+    final date = DateTime.now();
+    final response = await http.post(url,
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": _p.tokenAuth
+        },
+        body: jsonEncode({
+          "id_post": id_post,
+          "content": content,
+          "datetime": date.toString()
+        }));
+    if (response.statusCode == 200) {
+      return convert.jsonDecode(response.body);
+    } else {
+      throw Exception("No se ha podido agregar su comentario.");
+    }
+  }
+
+  Future<dynamic> getComments(String id_post) async {
+    var url =
+        Uri.parse("http://10.0.2.2:8000/api/posts/comments?id_post=${id_post}");
+    final response =
+        await http.get(url, headers: {"Content-Type": "application/json"});
+    if (response.statusCode == 200) {
+      return convert.jsonDecode(response.body);
+    } else {
+      throw Exception(
+          "No se han podido contar las reacciones y/o comentarios.");
+    }
+  }
 }

@@ -15,12 +15,6 @@ class Dashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     Map<String, dynamic> user = Provider.of<UserModel>(context).authUser;
 
-    /*
-    if (user.isEmpty) {
-      Navigator.pushNamed(context, "/splash");
-    }
-    */
-
     return Scaffold(
       body: SafeArea(
         child: Column(children: [

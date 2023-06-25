@@ -13,7 +13,7 @@ Future<void> editDescription(BuildContext context) async {
       builder: (context) {
         return AlertDialog(
           title: Text("Actualizar descripción"),
-          content: _EditInput(
+          content: EditInput(
             placeholder: "Descripción",
             icon: Icon(Icons.people),
             callback: (value) {
@@ -72,7 +72,7 @@ class _EditExperienceState extends State<EditExperience> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Column(children: [
-              _EditInput(
+              EditInput(
                 icon: Icon(Icons.map),
                 placeholder: "Ingrese el lugar de trabajo",
                 callback: (value) {
@@ -80,7 +80,7 @@ class _EditExperienceState extends State<EditExperience> {
                   setState(() {});
                 },
               ),
-              _EditInput(
+              EditInput(
                 icon: Icon(Icons.work),
                 placeholder: "Ingrese su posición o cargo",
                 callback: (value) {
@@ -97,7 +97,7 @@ class _EditExperienceState extends State<EditExperience> {
 
                 if (date != null) {
                   setState(() {
-                    date_start = date!.start;
+                    date_start = date.start;
                     date_end = date.end;
                   });
                 }
@@ -169,7 +169,7 @@ class _EditEducationHistoryState extends State<EditEducationHistory> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Column(children: [
-              _EditInput(
+              EditInput(
                 icon: Icon(Icons.map),
                 placeholder: "Ingrese el lugar de estudio",
                 callback: (value) {
@@ -177,7 +177,7 @@ class _EditEducationHistoryState extends State<EditEducationHistory> {
                   setState(() {});
                 },
               ),
-              _EditInput(
+              EditInput(
                 icon: Icon(Icons.work),
                 placeholder: "Ingrese su posición o cargo",
                 callback: (value) {
@@ -194,7 +194,7 @@ class _EditEducationHistoryState extends State<EditEducationHistory> {
 
                 if (date != null) {
                   setState(() {
-                    date_start = date!.start;
+                    date_start = date.start;
                     date_end = date.end;
                   });
                 }
@@ -245,11 +245,11 @@ class _EditEducationHistoryState extends State<EditEducationHistory> {
   }
 }
 
-class _EditInput extends StatefulWidget {
+class EditInput extends StatefulWidget {
   final Icon icon;
   final String placeholder;
   final Function callback;
-  const _EditInput({
+  const EditInput({
     super.key,
     required this.icon,
     required this.placeholder,
@@ -257,10 +257,10 @@ class _EditInput extends StatefulWidget {
   });
 
   @override
-  State<_EditInput> createState() => _EditInputState();
+  State<EditInput> createState() => _EditInputState();
 }
 
-class _EditInputState extends State<_EditInput> {
+class _EditInputState extends State<EditInput> {
   TextEditingController controller = TextEditingController();
   Color prefColor = Colors.white;
 
