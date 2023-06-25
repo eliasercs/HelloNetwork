@@ -13,9 +13,6 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final error = Provider.of<ErrorModel>(context).error;
-    print(error);
-
     Map<String, dynamic> user = Provider.of<UserModel>(context).authUser;
 
     /*

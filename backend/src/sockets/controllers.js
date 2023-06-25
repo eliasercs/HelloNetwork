@@ -82,7 +82,6 @@ const socketController = async (socket, io) => {
       date: Date.now()
     });
     const msg_c = jwt.sign({message}, `${msg["date"]}`)
-    console.log(msg_c)
     msg.content = msg_c
     await msg.save();
 

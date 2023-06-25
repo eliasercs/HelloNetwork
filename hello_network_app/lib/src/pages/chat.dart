@@ -123,7 +123,6 @@ class UserChat extends StatelessWidget {
                     return ListView.builder(
                         itemCount: data!.length,
                         itemBuilder: ((context, index) {
-                          print(data[index]["author"] == user["_id"]);
                           return data[index]["author"] == user["_id"]
                               ? ChatTextLeft(
                                   text: data[index]["content"],
