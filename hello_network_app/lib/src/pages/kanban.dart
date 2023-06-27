@@ -248,7 +248,6 @@ class _TaskAddForm extends StatefulWidget {
 class __TaskAddFormState extends State<_TaskAddForm> {
   final _formKey = GlobalKey<FormState>();
   DateTime? dateStr;
-  TimeOfDay? timeStr;
   String? dropdown_value = "Por hacer";
   var status = ["Por hacer", "En proceso", "Completado", "Cancelado"];
 
@@ -308,22 +307,6 @@ class __TaskAddFormState extends State<_TaskAddForm> {
               SizedBox(
                 height: 10,
               ),
-              Button(
-                "Seleccione una hora",
-                Colors.black,
-                () {
-                  final time = showTimePicker(
-                      context: context, initialTime: TimeOfDay.now());
-                  time.then((value) {
-                    if (value != null) {
-                      print(value);
-                      timeStr = value;
-                      setState(() {});
-                    }
-                  });
-                },
-                width: size.width,
-              ),
               DropdownButton(
                   value: dropdown_value,
                   items: status
@@ -345,20 +328,24 @@ class __TaskAddFormState extends State<_TaskAddForm> {
               Button(
                 "Seleccione una fecha",
                 Colors.black,
-                () {
-                  final date = showDatePicker(
+                () async {
+                  final date = await showDatePicker(
                       context: context,
                       initialDate: DateTime.now(),
                       firstDate: DateTime.now(),
                       lastDate: DateTime.now().add(const Duration(days: 365)));
 
-                  date.then((value) {
-                    if (value != null) {
-                      print(value);
-                      dateStr = value;
-                      setState(() {});
-                    }
-                  });
+                  final time = await showTimePicker(
+                      context: context, initialTime: TimeOfDay.now());
+
+                  if (date != null && time != null) {
+                    dateStr = date
+                        .add(Duration(hours: time.hour, minutes: time.minute));
+
+                    setState(() {});
+                    Provider.of<TaskModel>(context, listen: false)
+                        .setTaskForm("date", dateStr.toString());
+                  }
                 },
                 width: size.width,
               ),
@@ -369,24 +356,12 @@ class __TaskAddFormState extends State<_TaskAddForm> {
               SizedBox(
                 height: 10,
               ),
-              Button("Enviar Notificación", Colors.black, () {
-                dateStr = dateStr!.add(
-                    Duration(hours: timeStr!.hour, minutes: timeStr!.minute));
-                setState(() {});
-                showNotification(dateStr!.toString());
-              }),
               Button(
                 "Agregar Tarea",
                 Colors.black,
                 () async {
-                  if (dateStr != null && timeStr != null) {
-                    dateStr = dateStr!.add(Duration(
-                        hours: timeStr!.hour, minutes: timeStr!.minute));
-                    setState(() {});
-                    Provider.of<TaskModel>(context, listen: false)
-                        .setTaskForm("date", dateStr.toString());
+                  if (dateStr != null) {
                     if (_formKey.currentState!.validate()) {
-                      print(dateStr.toString());
                       final newTask =
                           Provider.of<TaskModel>(context, listen: false)
                               .taskForm;
@@ -396,6 +371,10 @@ class __TaskAddFormState extends State<_TaskAddForm> {
                             context: context,
                             title: "Información",
                             content: data["msg"]);
+                        final tittle = newTask["title"] as String;
+                        final status = newTask["status"] as String;
+                        await showNotification(
+                            dateStr!.toString(), tittle, status);
 
                         Provider.of<TaskModel>(context, listen: false)
                             .resetTaskForm();

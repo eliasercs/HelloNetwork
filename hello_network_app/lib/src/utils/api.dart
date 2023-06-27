@@ -84,6 +84,7 @@ class ApiServices {
 
   Future<dynamic> addNewTask(Map<String, dynamic> data) async {
     var url = Uri.parse("http://10.0.2.2:8000/api/tasks/add");
+    print(data);
     final response = await http.post(url,
         headers: <String, String>{
           "Content-Type": "application/json",

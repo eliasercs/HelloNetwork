@@ -33,6 +33,7 @@ class navbarDashboard extends StatelessWidget {
               ),
               Text(
                 '$name $lastname',
+                key: Key("username"),
                 style:
                     const TextStyle(fontSize: 18, fontFamily: "PoppinsMedium"),
               )

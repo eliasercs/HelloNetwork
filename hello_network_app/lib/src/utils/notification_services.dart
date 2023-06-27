@@ -18,7 +18,7 @@ Future<void> initNotifications() async {
   await flutterLocalNotificationPlugin.initialize(initializationSettings);
 }
 
-Future<void> showNotification(String? date) async {
+Future<void> showNotification(String? date, String title, String status) async {
   var d = tz.TZDateTime.parse(tz.local, date!);
 
   const AndroidNotificationDetails androidNotificationDetails =
@@ -40,8 +40,8 @@ Future<void> showNotification(String? date) async {
 
   var uiLocalNotificationDateInterpretation =
       UILocalNotificationDateInterpretation.absoluteTime;
-  await flutterLocalNotificationPlugin.zonedSchedule(1, "Prueba",
-      "Te quiero mucho", tz.TZDateTime.from(d, tz.local), notificationDetails,
+  await flutterLocalNotificationPlugin.zonedSchedule(1, title, "Estado $status",
+      tz.TZDateTime.from(d, tz.local), notificationDetails,
       uiLocalNotificationDateInterpretation:
           uiLocalNotificationDateInterpretation,
       matchDateTimeComponents: DateTimeComponents.time);

@@ -259,6 +259,7 @@ class _SelectUserState extends State<SelectUser> {
               width: size.width,
               height: size.height,
               child: StreamBuilder<dynamic>(
+                key: Key("UsersActive"),
                 stream: streamSocket.getActiveUsers,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {

@@ -4,15 +4,16 @@
   "description": "",
   "main": "./src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/index.js",
-    "start-dev": "nodemon ./src/index.js"
+    "test": "cross-env NODE_ENV=test",
+    "start": "cross-env NODE_ENV=productionnode ./src/index.js",
+    "start-dev": "cross-env NODE_ENV=development nodemon ./src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "supertest": "^6.3.3"
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
