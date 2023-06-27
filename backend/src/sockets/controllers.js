@@ -61,7 +61,8 @@ const socketController = async (socket, io) => {
   io.emit("active-users", { data: chat.UsersArr });
 
   socket.on("active", (payload) => {
-    io.emit("active-users", { data: chat.UsersArr });
+    let users = chat.UsersArr
+    io.emit("active-users", { data: users });
   });
 
   // Limpiar cuando un usuario se desconecta
@@ -71,7 +72,6 @@ const socketController = async (socket, io) => {
   });
 
   socket.on("private-message", async (payload) => {
-    console.log(payload);
     const { uid, message } = payload;
 
     //console.log(`De: ${user.id} Para: ${uid}`);
