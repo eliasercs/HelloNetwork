@@ -1,0 +1,1 @@
+const registration_token = ""
