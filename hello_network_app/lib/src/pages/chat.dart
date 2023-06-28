@@ -18,6 +18,7 @@ import '../models/user_model.dart';
 import '../widgets/navbar.dart';
 
 Preferences _p = Preferences();
+final String _prodAPI = "https://hellonetwork-production.up.railway.app";
 
 class InputChat extends StatefulWidget {
   final String placeholder;
@@ -33,7 +34,7 @@ class _InputChatState extends State<InputChat> {
   TextEditingController controller = TextEditingController();
   Color prefColor = Colors.white;
   Socket socket = io(
-      "http://10.0.2.2:8000",
+      "$_prodAPI",
       OptionBuilder().setTransports(['websocket']).setExtraHeaders(
           {"auth-token": _p.tokenAuth}).build());
 
@@ -99,7 +100,7 @@ class UserChat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Socket socket = io(
-        "http://10.0.2.2:8000",
+        "$_prodAPI",
         OptionBuilder().setTransports(['websocket']).setExtraHeaders(
             {"auth-token": _p.tokenAuth}).build());
     final size = MediaQuery.of(context).size;
@@ -232,7 +233,7 @@ class SelectUser extends StatefulWidget {
 
 class _SelectUserState extends State<SelectUser> {
   Socket socket = io(
-      "http://10.0.2.2:8000",
+      "$_prodAPI",
       OptionBuilder().setTransports(['websocket']).setExtraHeaders(
           {"auth-token": _p.tokenAuth}).build());
   @override

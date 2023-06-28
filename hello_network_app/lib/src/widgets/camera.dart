@@ -56,24 +56,26 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
             }
           },
         ),
-        Button("Capturar", Colors.black, () async {
-          try {
-            await _initializeControllerFuture;
-            final tmp = await getTemporaryDirectory();
-            final path = join(tmp.path, '${DateTime.now()}.png');
-            final data = await _cameraController.takePicture();
-            data.saveTo(path);
-
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => _DisplayImage(imagePath: path)));
-          } catch (e) {
-            newDialog(
-                context: context, title: "Peligro", content: e.toString());
-          }
-        })
       ]),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.camera),
+          onPressed: () async {
+            try {
+              await _initializeControllerFuture;
+              final tmp = await getTemporaryDirectory();
+              final path = join(tmp.path, '${DateTime.now()}.png');
+              final data = await _cameraController.takePicture();
+              data.saveTo(path);
+
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => _DisplayImage(imagePath: path)));
+            } catch (e) {
+              newDialog(
+                  context: context, title: "Peligro", content: e.toString());
+            }
+          }),
     ));
   }
 }
@@ -95,20 +97,26 @@ class _DisplayImage extends StatelessWidget {
           image,
           fit: BoxFit.cover,
         ),
-        Button("Cargar Imagen", Colors.black, () async {
-          final email = user["email"];
-          try {
-            final event = await ApiServices().setAvatar(image, email);
-            newDialog(
-                context: context, title: "Información", content: event["msg"]);
-            Provider.of<UserModel>(context, listen: false).initUserAuth();
-            ApiServices().getAllPosts();
-          } on Exception catch (e) {
-            newDialog(
-                context: context, title: "Información", content: e.toString());
-          }
-        })
       ]),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.upload_file),
+          onPressed: () async {
+            final email = user["email"];
+            try {
+              final event = await ApiServices().setAvatar(image, email);
+              newDialog(
+                  context: context,
+                  title: "Información",
+                  content: event["msg"]);
+              Provider.of<UserModel>(context, listen: false).initUserAuth();
+              ApiServices().getAllPosts();
+            } on Exception catch (e) {
+              newDialog(
+                  context: context,
+                  title: "Información",
+                  content: e.toString());
+            }
+          }),
     ));
   }
 }

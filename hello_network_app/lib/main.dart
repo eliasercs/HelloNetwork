@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:hello_network_app/src/models/post_model.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -26,10 +27,20 @@ import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 Preferences _p = Preferences();
+final String _prodAPI = "https://hellonetwork-production.up.railway.app";
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 
 StreamSocket streamSocket = StreamSocket();
 Socket socket = io(
-    'http://10.0.2.2:8000',
+    '$_prodAPI',
     OptionBuilder().setTransports(['websocket']).setExtraHeaders(
         {"auth-token": _p.tokenAuth}).build());
 
@@ -54,6 +65,7 @@ void main() async {
   tz.initializeTimeZones();
   await _p.initPrefs();
   await initNotifications();
+  HttpOverrides.global = MyHttpOverrides();
   connectAndListen();
   runApp(const MainApp());
 }
