@@ -114,14 +114,6 @@ class _View extends StatelessWidget {
           btnAction,
           width: size.width,
         ),
-        _OSeparator(),
-        SocialIcon(
-          icon: Icon(
-            FontAwesome5.google,
-            color: Colors.red,
-          ),
-          text: "Iniciar Sesión con Google",
-        )
       ],
     );
   }

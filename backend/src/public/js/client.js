@@ -4,9 +4,10 @@ const sendMessage = document.getElementById("sendMessage")
 const messageContainer = document.getElementById("messageContainer")
 const users_active = document.getElementById("users-active")
 
-let id_user = "649781c133bd1657a2147c61"
+let id_user = ""
 
 const user = {
+    id: "649781c133bd1657a2147c61",
     name: "Soporte",
     lastname: "Hello Network",
     email: "soporte@hellonetwork.com",
@@ -25,17 +26,16 @@ const connectSocket = async (token) => {
     socket.on("get-messages", (payload) => {
         console.log(payload)
 
-        payload.forEach(({content}) => {
+        payload.forEach(({content, author}) => {
             let dom_element = document.createElement("div")
-            dom_element.setAttribute("class", `alert alert-info`)
-            dom_element.innerText = `${content}`
+            dom_element.setAttribute("class", `alert ${author === user["id"] ? "alert-warning" : "alert-success"}`)
+            dom_element.innerText = `${author}: ${content}`
             messageContainer.appendChild(dom_element)
         });
     })
 
     socket.on("active-users", (payload) => {
-        const active = payload["data"]
-        console.log(active)
+        let active = payload["data"]
         active.forEach(({id, name, lastname}) => {
             let dom_element = document.createElement("div")
             dom_element.setAttribute("id", id)
